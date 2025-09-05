@@ -30,17 +30,8 @@ public class QueuedTextTyper : MonoBehaviour
         }
     }
 
-    public void AddContinuingMessage(string message)
-    {
-        StopAllCoroutines();
-        messageQueue.Clear();
-        messageQueue.Enqueue(message);
 
-        if (!isShowing)
-        {
-            StartCoroutine(ProcessQueue());
-        }
-    }
+   
 
     private IEnumerator ProcessQueue()
     {

@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviour
     private float lastInputTime = 0f;
 
     //DIALOGUE SYSTEM
+    bool isSleepingMessageRepeating = false;
 
     //public TextMeshProUGUI text;
     public QueuedTextTyper textSystem;
@@ -88,7 +89,6 @@ public class GameManager : MonoBehaviour
     {
         UpdateAvatarStatus();
         RandomInitialValue();
-        StartCoroutine(RepeatSleepMessage());
     }
 
     // Update is called once per frame
@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour
         UpdateNormalValueChange();
         UpdateSleepCheck();
         UpdateSliderColor();
+        UpdateSleepMessage();
+        UpdateConfineValue();
     }
 
     void SetSliderValue()
@@ -499,17 +501,18 @@ public class GameManager : MonoBehaviour
         }
         else if (currentIdle != PlayerIdle.PlayPhone && currentIdle != PlayerIdle.LayOnGround)
         {
-            normal_satisfaction_increase = -.75f;
-            normal_excitement_increase = -.75f;
+            normal_satisfaction_increase = -1f;
+            normal_excitement_increase = -1.25f;
         }
         else if (currentIdle == PlayerIdle.LayOnGround)
         {
             normal_satisfaction_increase = -1.5f;
+            normal_excitement_increase = -1.25f;
         }
         else
         {
             normal_satisfaction_increase = -.75f;
-            normal_excitement_increase = -.75f;
+            normal_excitement_increase = -2f;
         }
 
         if (thirsty < 50)
@@ -573,13 +576,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void UpdateSleepMessage()
+    {
+        if (IfCanSleep() && !isSleepingMessageRepeating)
+        {
+            StartCoroutine(RepeatSleepMessage());
+        }
+    }
     IEnumerator RepeatSleepMessage()
     {
-        while (IfCanSleep())  
+        isSleepingMessageRepeating = true;
+        while (IfCanSleep())
         {
             textSystem.AddMessage("zzzzz");
-            yield return new WaitForSeconds(2.5f); 
+            yield return new WaitForSeconds(2.5f);
         }
+        isSleepingMessageRepeating = false; 
     }
 
     bool IfCanSleep()
@@ -626,6 +638,16 @@ public class GameManager : MonoBehaviour
         if (satisfaction <= 10) satisfaction_fill.color = Color.red;
         else satisfaction_fill.color = Color.white;
 
+
+    }
+
+    void UpdateConfineValue()
+    {
+        temperature = Mathf.Clamp(temperature, 0f, 120f);
+        thirsty = Mathf.Clamp(thirsty, 0f, 120f);
+        urination = Mathf.Clamp(urination, 0f, 120f);
+        excitement = Mathf.Clamp(excitement, 0f, 120f);
+        satisfaction = Mathf.Clamp(satisfaction, 0f, 120f);
 
     }
 }
