@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,24 +11,30 @@ public class GameManager : MonoBehaviour
     private float urination;
     private float excitement;
     private float satisfaction;
+    private float sleep_progress = 0f;
 
     public string input;
 
-    private float temper_change;
     private bool isAcTurnedOn;
-    private float ac_temperature;
 
     public bool canSleep;
 
     public float sleepTime;
-
-    private float total_temp;
 
     public Slider temperature_slider;
     public Slider thirsty_slider;
     public Slider urination_slider;
     public Slider excitement_slider;
     public Slider satisfaction_slider;
+    public Slider sleepProgress_slider;
+
+    public Image tem_fill;
+    public Image thirsty_fill;
+    public Image urination_fill;
+    public Image excitement_fill;
+    public Image satisfaction_fill;
+
+
 
     private float normal_temperature_increase = 1.5f;
     private float normal_thirsty_increase = 1f;
@@ -72,13 +79,16 @@ public class GameManager : MonoBehaviour
 
     //DIALOGUE SYSTEM
 
-    public TextMeshProUGUI text;
+    //public TextMeshProUGUI text;
+    public QueuedTextTyper textSystem;
+    public static bool canInput = true;
     public TextMeshProUGUI inputText;
 
     void Start()
     {
         UpdateAvatarStatus();
         RandomInitialValue();
+        StartCoroutine(RepeatSleepMessage());
     }
 
     // Update is called once per frame
@@ -86,12 +96,11 @@ public class GameManager : MonoBehaviour
     {
         SetSliderValue();
         UpdateInpute();
-
         UpdateDisplay();
         UpdateValuesPerSecond();
         UpdateNormalValueChange();
-
-
+        UpdateSleepCheck();
+        UpdateSliderColor();
     }
 
     void SetSliderValue()
@@ -101,6 +110,7 @@ public class GameManager : MonoBehaviour
         urination_slider.value = urination;
         excitement_slider.value = excitement;
         satisfaction_slider.value = satisfaction;
+        sleepProgress_slider.value = sleep_progress;
     }
 
     bool CheckCombo(List<KeyCode> combo)
@@ -132,14 +142,17 @@ public class GameManager : MonoBehaviour
 
     void UpdateInpute()
     {
-        if (Input.GetKeyDown(KeyCode.W)) RegisterInput(KeyCode.W);
-        if (Input.GetKeyDown(KeyCode.A)) RegisterInput(KeyCode.A);
-        if (Input.GetKeyDown(KeyCode.S)) RegisterInput(KeyCode.S);
-        if (Input.GetKeyDown(KeyCode.D)) RegisterInput(KeyCode.D);
+        if (GameManager.canInput)
+        {
+            if (Input.GetKeyDown(KeyCode.W)) RegisterInput(KeyCode.W);
+            if (Input.GetKeyDown(KeyCode.A)) RegisterInput(KeyCode.A);
+            if (Input.GetKeyDown(KeyCode.S)) RegisterInput(KeyCode.S);
+            if (Input.GetKeyDown(KeyCode.D)) RegisterInput(KeyCode.D);
+        }
 
         if (currentInput.Count > 0 && Time.time - lastInputTime > MaxtimeLimit)
         {
-            text.text = "Oh no, I have forgotten what I should do now.";
+            textSystem.AddMessage("Oh no, I have forgotten what I should do now.");
             satisfaction -= 10;
             currentInput.Clear();
         }
@@ -149,7 +162,7 @@ public class GameManager : MonoBehaviour
     {
         if (lastInputTime > 0f && Time.time - lastInputTime < MintimeLimit)
         {
-            text.text = "It's too fast. Forgive me, please.";
+            textSystem.AddMessage("It's too fast. Forgive me, please.");
             excitement += 10;
             currentInput.Clear();
             return;
@@ -164,25 +177,25 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownRight)
             {
-                text.text = "So I sit up, it is not easy, and being able to do so excites me.";
+                textSystem.AddMessage("So I sit up, it is not easy, and being able to do so excites me.");
                 excitement += 10;
                 currentIdle = PlayerIdle.Sit;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I stop playing my phone, sitting on my bed now.";
+                textSystem.AddMessage("I stop playing my phone, sitting on my bed now.");
                 excitement += 10;
                 currentIdle = PlayerIdle.Sit;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.LayOnGround)
             {
-                text.text = "I cannot sit on the bed before I stand up.";
+                textSystem.AddMessage("I cannot sit on the bed before I stand up.");
             }
             else
             {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(standAction))
@@ -191,24 +204,24 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.LayOnGround)
             {
-                text.text = "So I stand up, it is hard for me, and I'm happy I can still stand up.";
+                textSystem.AddMessage("So I stand up, it is hard for me, and I'm happy I can still stand up.");
                 excitement += 10;
                 currentIdle = PlayerIdle.Stand;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I stop playing my phone, standing in my room now.";
+                textSystem.AddMessage("I stop playing my phone, standing in my room now.");
                 excitement += 10;
                 currentIdle = PlayerIdle.Stand;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownRight)
             {
-                text.text = "I cannot stand up before I can sit up, I'm sorry.";
+                textSystem.AddMessage("I cannot stand up before I can sit up, I'm sorry.");
             }
             else {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(layDownAction))
@@ -217,25 +230,25 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Sit)
             {
-                text.text = "So I lay on my bed, feeling excited about that I may sleep.";
+                textSystem.AddMessage("So I lay on my bed, feeling excited about that I may sleep.");
                 excitement += 10;
                 currentIdle = PlayerIdle.LayDownMiddle;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I stop playing my phone, laying on my bed.";
+                textSystem.AddMessage("I stop playing my phone, laying on my bed.");
                 excitement += 10;
                 currentIdle = PlayerIdle.LayDownMiddle;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround)
             {
-                text.text = "I cannot lay down before I sit on the bed first, I'm sorry.";
+                textSystem.AddMessage("I cannot lay down before I sit on the bed first, I'm sorry.");
             }
             else
             {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(turnLeftAction))
@@ -244,7 +257,7 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownRight)
             {
-                text.text = "So I turn left on my bed. It becomes more comfortable, and I feel more exciting.";
+                textSystem.AddMessage("So I turn left on my bed. It becomes more comfortable, and I feel more exciting.");
                 excitement += 10;
                 satisfaction += 5;
                 currentIdle = PlayerIdle.LayDownLeft;
@@ -252,11 +265,11 @@ public class GameManager : MonoBehaviour
             }
             else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should lay down on my bed first.";
+                textSystem.AddMessage("I should lay down on my bed first.");
             }
             else
             {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(turnRightAction))
@@ -265,7 +278,7 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft)
             {
-                text.text = "So I turn right on my bed. It becomes more comfortable, and I feel more exciting.";
+                textSystem.AddMessage("So I turn right on my bed. It becomes more comfortable, and I feel more exciting.");
                 excitement += 10;
                 satisfaction += 5;
                 currentIdle = PlayerIdle.LayDownRight;
@@ -273,11 +286,11 @@ public class GameManager : MonoBehaviour
             }
             else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should lay down on my bed first.";
+                textSystem.AddMessage("I should lay down on my bed first.");
             }
             else
             {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(turnMidAction))
@@ -286,18 +299,18 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.LayDownRight || currentIdle == PlayerIdle.LayDownLeft)
             {
-                text.text = "So I turn my body straight on the bed.";
+                textSystem.AddMessage("So I turn my body straight on the bed.");
                 excitement += 5;
                 currentIdle = PlayerIdle.LayDownMiddle;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should lay down on my bed first.";
+                textSystem.AddMessage("I should lay down on my bed first.");
             }
             else
             {
-                text.text = "no.";
+                textSystem.AddMessage("no.");
             }
         }
         else if (CheckCombo(turnOnACAction))
@@ -306,18 +319,18 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand)
             {
-                text.text = "I turn on the AC, I'm glad that I can.";
+                textSystem.AddMessage("I turn on the AC, I'm glad that I can.");
                 excitement += 10;
                 satisfaction += 5;
                 isAcTurnedOn = true;            
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should stop playing phone first.";
+                textSystem.AddMessage("I should stop playing phone first.");
             }
             else
             {
-                text.text = "I need stand up to reach the AC controller.";
+                textSystem.AddMessage("I need stand up to reach the AC controller.");
             }
         }
         else if (CheckCombo(turnOffACAction))
@@ -326,18 +339,18 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand)
             {
-                text.text = "I turn off the AC, I will miss it.";
+                textSystem.AddMessage("I turn off the AC, I will miss it.");
                 excitement += 10;
                 satisfaction -= 5;
                 isAcTurnedOn = false;
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should stop playing phone first.";
+                textSystem.AddMessage("I should stop playing phone first.");
             }
             else
             {
-                text.text = "I need to stand up to reach the AC controller.";
+                textSystem.AddMessage("I need to stand up to reach the AC controller.");
             }
         }
         else if (CheckCombo(playPhoneAction))
@@ -346,20 +359,20 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Sit)
             {
-                text.text = "Yes, I love phone time.";
+                textSystem.AddMessage("Yes, I love phone time.");
                 excitement += 10;
                 currentIdle = PlayerIdle.PlayPhone;
                 UpdateAvatarStatus();
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "No more phone tonight, I swear.";
+                textSystem.AddMessage("No more phone tonight, I swear.");
                 currentIdle = PlayerIdle.Sit;
                 UpdateAvatarStatus();
             }
             else
             {
-                text.text = "I only want to play my phone if I am sitting on my bed.";
+                textSystem.AddMessage("I only want to play my phone if I am sitting on my bed.");
             }
         }
         else if (CheckCombo(drinkAction))
@@ -368,18 +381,18 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand)
             {
-                text.text = "Cheer? I guess.";
+                textSystem.AddMessage("Cheer? I guess.");
                 excitement += 10;
                 satisfaction += 10;
                 thirsty = 0;
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should stop playing phone first.";
+                textSystem.AddMessage("I should stop playing phone first.");
             }
             else
             {
-                text.text = "I need to stand up to reach my cup.";
+                textSystem.AddMessage("I need to stand up to reach my cup.");
             }
         }
         else if (CheckCombo(urinationAction))
@@ -388,18 +401,18 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand)
             {
-                text.text = "Release time.";
+                textSystem.AddMessage("Release time.");
                 excitement += 15;
                 satisfaction += 20;
                 urination = 0;
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should stop playing phone first.";
+                textSystem.AddMessage("I should stop playing phone first.");
             }
             else
             {
-                text.text = "I need to stand up first.";
+                textSystem.AddMessage("I need to stand up first.");
             }
         }
         else if (CheckCombo(layOnGroundAction))
@@ -408,21 +421,21 @@ public class GameManager : MonoBehaviour
 
             if (currentIdle == PlayerIdle.Stand)
             {
-                text.text = "Ehh. At least it's cooler.";
+                textSystem.AddMessage("Ehh. At least it's cooler.");
                 currentIdle = PlayerIdle.LayOnGround;
             }
             else if (currentIdle == PlayerIdle.PlayPhone)
             {
-                text.text = "I should stop playing phone first.";
+                textSystem.AddMessage("I should stop playing phone first.");
             }
             else
             {
-                text.text = "I need to stand up first.";
+                textSystem.AddMessage("I need to stand up first.");
             }
         }
         else if (!IsPrefixValid(currentInput))
         {
-            text.text = "No, sorry, I can't.";
+            textSystem.AddMessage("No, sorry, I can't.");
             currentInput.Clear();
         }
 
@@ -434,7 +447,7 @@ public class GameManager : MonoBehaviour
         thirsty = Random.Range(10, 70);
         urination = Random.Range(10, 70);
         excitement = Random.Range(10, 70);
-        satisfaction = Random.Range(10, 50);
+        satisfaction = Random.Range(15, 50);
 
     }
     void UpdateDisplay()
@@ -481,8 +494,8 @@ public class GameManager : MonoBehaviour
 
         if (currentIdle == PlayerIdle.PlayPhone)
         {
-            normal_satisfaction_increase = 2f;
-            normal_excitement_increase = 4f;
+            normal_satisfaction_increase = 4f;
+            normal_excitement_increase = 2f;
         }
         else if (currentIdle != PlayerIdle.PlayPhone && currentIdle != PlayerIdle.LayOnGround)
         {
@@ -492,6 +505,11 @@ public class GameManager : MonoBehaviour
         else if (currentIdle == PlayerIdle.LayOnGround)
         {
             normal_satisfaction_increase = -1.5f;
+        }
+        else
+        {
+            normal_satisfaction_increase = -.75f;
+            normal_excitement_increase = -.75f;
         }
 
         if (thirsty < 50)
@@ -544,4 +562,70 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void UpdateSleepCheck()
+    {
+        if (IfCanSleep())
+        {
+            if (currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownRight || currentIdle == PlayerIdle.LayOnGround)
+            {
+                sleep_progress += 1f * Time.deltaTime;
+            }
+        }
+    }
+
+    IEnumerator RepeatSleepMessage()
+    {
+        while (IfCanSleep())  
+        {
+            textSystem.AddMessage("zzzzz");
+            yield return new WaitForSeconds(2.5f); 
+        }
+    }
+
+    bool IfCanSleep()
+    {
+        if (temperature >= 20 && temperature <= 80 && thirsty < 115 && urination < 115 && excitement < 90 && satisfaction > 10)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void UpdateSliderColor()
+    {
+         
+
+        if (temperature >= 80)
+        {
+            tem_fill.color = Color.red;
+        }
+        else if (temperature <= 20)
+        {
+            tem_fill.color = Color.blue;
+        }
+        else
+        {
+            tem_fill.color = Color.white;
+        }
+
+        if (thirsty >= 115)
+        {
+            thirsty_fill.color = Color.red;
+        }
+        else thirsty_fill.color = Color.white;
+
+        if (urination >= 115) urination_fill.color = Color.red;
+        else urination_fill.color = Color.white;
+
+        if (excitement >= 90) excitement_fill.color = Color.red;
+        else excitement_fill.color = Color.white;
+
+        if (satisfaction <= 10) satisfaction_fill.color = Color.red;
+        else satisfaction_fill.color = Color.white;
+
+
+    }
 }
