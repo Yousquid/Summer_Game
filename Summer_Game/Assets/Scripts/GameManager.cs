@@ -29,19 +29,14 @@ public class GameManager : MonoBehaviour
     public Slider excitement_slider;
     public Slider satisfaction_slider;
 
-    private float normal_temperature_increase = 2f;
-    private float normal_thirsty_increase = 1.5f;
-    private float normal_urination_increase = 0f;
+    private float normal_temperature_increase = 1.5f;
+    private float normal_thirsty_increase = 1f;
+    private float normal_urination_increase = .75f;
     private float normal_excitement_increase = -1.5f;
     private float normal_satisfaction_increase = -1.5f;
 
-    public bool isStand = false;
-    public bool isSit = false;
-    public bool isLayDownMid = false;
-    public bool isLayDownLeft = false;
-    public bool isLayDownRight = false;
-    public bool isOnGround = true;
-    public bool isPlayPhone = false;
+    enum PlayerIdle { Stand, Sit, LayDownMiddle, LayDownLeft, LayDownRight, LayOnGround, PlayPhone}
+    PlayerIdle currentIdle = PlayerIdle.LayOnGround;
 
     public GameObject standIdle;
     public GameObject sitIdle;
@@ -49,6 +44,8 @@ public class GameManager : MonoBehaviour
     public GameObject layDownLeftIdle;
     public GameObject layDownRightIdle;
     public GameObject layOngroundIdle;
+    public GameObject playPhoneIdle;
+
 
 
     // INPUT SYSTEM
@@ -60,11 +57,11 @@ public class GameManager : MonoBehaviour
     private List<KeyCode> turnLeftAction = new List<KeyCode>() { KeyCode.A, KeyCode.A, KeyCode.A};
     private List<KeyCode> turnRightAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.D };
     private List<KeyCode> turnMidAction = new List<KeyCode>() { KeyCode.S, KeyCode.S, KeyCode.S };
-    private List<KeyCode> turnOnACAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.D, KeyCode.S, KeyCode.S };
-    private List<KeyCode> turnOffACAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.D, KeyCode.W, KeyCode.W };
+    private List<KeyCode> turnOnACAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.W, KeyCode.S, KeyCode.S };
+    private List<KeyCode> turnOffACAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.S, KeyCode.W, KeyCode.W };
     private List<KeyCode> playPhoneAction = new List<KeyCode>() { KeyCode.S, KeyCode.S, KeyCode.W, KeyCode.W, KeyCode.A, KeyCode.A };
-    private List<KeyCode> drinkAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.A };
-    private List<KeyCode> urinationAction = new List<KeyCode>() { KeyCode.A, KeyCode.A, KeyCode.D, KeyCode.D, KeyCode.S, KeyCode.S, KeyCode.S, KeyCode.S };
+    private List<KeyCode> drinkAction = new List<KeyCode>() { KeyCode.D, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.A };
+    private List<KeyCode> urinationAction = new List<KeyCode>() { KeyCode.A, KeyCode.A, KeyCode.D, KeyCode.D, KeyCode.S, KeyCode.S, KeyCode.S };
 
 
     private List<KeyCode> currentInput = new List<KeyCode>();
@@ -80,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        UpdateAvatarStatus();
         RandomInitialValue();
     }
 
@@ -142,6 +140,7 @@ public class GameManager : MonoBehaviour
         if (currentInput.Count > 0 && Time.time - lastInputTime > MaxtimeLimit)
         {
             text.text = "Oh no, I have forgotten what I should do now.";
+            satisfaction -= 10;
             currentInput.Clear();
         }
        
@@ -151,6 +150,7 @@ public class GameManager : MonoBehaviour
         if (lastInputTime > 0f && Time.time - lastInputTime < MintimeLimit)
         {
             text.text = "It's too fast. Forgive me, please.";
+            excitement += 10;
             currentInput.Clear();
             return;
         }
@@ -161,73 +161,268 @@ public class GameManager : MonoBehaviour
         if (CheckCombo(sitAction))
         {
             currentInput.Clear();
-            if (isStand || isLayDownMid || isLayDownLeft || isLayDownRight)
+
+            if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownRight)
             {
-                text.text = "So I sit up, it is not easy.";
+                text.text = "So I sit up, it is not easy, and being able to do so excites me.";
+                excitement += 10;
+                currentIdle = PlayerIdle.Sit;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I stop playing my phone, sitting on my bed now.";
+                excitement += 10;
+                currentIdle = PlayerIdle.Sit;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.LayOnGround)
+            {
+                text.text = "I cannot sit on the bed before I stand up.";
             }
             else
             {
-             
+                text.text = "no.";
             }
         }
         else if (CheckCombo(standAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.LayOnGround)
+            {
+                text.text = "So I stand up, it is hard for me, and I'm happy I can still stand up.";
+                excitement += 10;
+                currentIdle = PlayerIdle.Stand;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I stop playing my phone, standing in my room now.";
+                excitement += 10;
+                currentIdle = PlayerIdle.Stand;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownRight)
+            {
+                text.text = "I cannot stand up before I can sit up, I'm sorry.";
+            }
+            else {
+                text.text = "no.";
+            }
         }
         else if (CheckCombo(layDownAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Sit)
+            {
+                text.text = "So I lay on my bed, feeling excited about that I may sleep.";
+                excitement += 10;
+                currentIdle = PlayerIdle.LayDownMiddle;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I stop playing my phone, laying on my bed.";
+                excitement += 10;
+                currentIdle = PlayerIdle.LayDownMiddle;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround)
+            {
+                text.text = "I cannot lay down before I sit on the bed first, I'm sorry.";
+            }
+            else
+            {
+                text.text = "no.";
+            }
         }
         else if (CheckCombo(turnLeftAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownRight)
+            {
+                text.text = "So I turn left on my bed. It becomes more comfortable, and I feel more exciting.";
+                excitement += 10;
+                satisfaction += 5;
+                currentIdle = PlayerIdle.LayDownLeft;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should lay down on my bed first.";
+            }
+            else
+            {
+                text.text = "no.";
+            }
         }
         else if (CheckCombo(turnRightAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownLeft)
+            {
+                text.text = "So I turn right on my bed. It becomes more comfortable, and I feel more exciting.";
+                excitement += 10;
+                satisfaction += 5;
+                currentIdle = PlayerIdle.LayDownRight;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should lay down on my bed first.";
+            }
+            else
+            {
+                text.text = "no.";
+            }
         }
         else if (CheckCombo(turnMidAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.LayDownRight || currentIdle == PlayerIdle.LayDownLeft)
+            {
+                text.text = "So I turn my body straight on the bed.";
+                excitement += 5;
+                currentIdle = PlayerIdle.LayDownMiddle;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.Stand || currentIdle == PlayerIdle.LayOnGround || currentIdle == PlayerIdle.Sit || currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should lay down on my bed first.";
+            }
+            else
+            {
+                text.text = "no.";
+            }
         }
         else if (CheckCombo(turnOnACAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Stand)
+            {
+                text.text = "I turn on the AC, I'm glad that I can.";
+                excitement += 10;
+                satisfaction += 5;
+                isAcTurnedOn = true;            
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should stop playing phone first.";
+            }
+            else
+            {
+                text.text = "I need stand up to reach the AC controller.";
+            }
         }
         else if (CheckCombo(turnOffACAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Stand)
+            {
+                text.text = "I turn off the AC, I will miss it.";
+                excitement += 10;
+                satisfaction -= 5;
+                isAcTurnedOn = false;
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should stop playing phone first.";
+            }
+            else
+            {
+                text.text = "I need to stand up to reach the AC controller.";
+            }
         }
         else if (CheckCombo(playPhoneAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Sit)
+            {
+                text.text = "Yes, I love phone time.";
+                excitement += 10;
+                currentIdle = PlayerIdle.PlayPhone;
+                UpdateAvatarStatus();
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "No more phone tonight, I swear.";
+                currentIdle = PlayerIdle.Sit;
+                UpdateAvatarStatus();
+            }
+            else
+            {
+                text.text = "I only want to play my phone if I am sitting on my bed.";
+            }
         }
         else if (CheckCombo(drinkAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Stand)
+            {
+                text.text = "Cheer? I guess.";
+                excitement += 10;
+                satisfaction += 10;
+                thirsty = 0;
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should stop playing phone first.";
+            }
+            else
+            {
+                text.text = "I need to stand up to reach my cup.";
+            }
         }
         else if (CheckCombo(urinationAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Stand)
+            {
+                text.text = "Release time.";
+                excitement += 15;
+                satisfaction += 20;
+                urination = 0;
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should stop playing phone first.";
+            }
+            else
+            {
+                text.text = "I need to stand up first.";
+            }
         }
         else if (CheckCombo(layOnGroundAction))
         {
-            Debug.Log("触发招式 B：播放对话 B");
             currentInput.Clear();
+
+            if (currentIdle == PlayerIdle.Stand)
+            {
+                text.text = "Ehh. At least it's cooler.";
+                currentIdle = PlayerIdle.LayOnGround;
+            }
+            else if (currentIdle == PlayerIdle.PlayPhone)
+            {
+                text.text = "I should stop playing phone first.";
+            }
+            else
+            {
+                text.text = "I need to stand up first.";
+            }
         }
         else if (!IsPrefixValid(currentInput))
         {
-            text.text = "No, I can't.";
+            text.text = "No, sorry, I can't.";
             currentInput.Clear();
         }
 
@@ -265,41 +460,87 @@ public class GameManager : MonoBehaviour
 
     void UpdateNormalValueChange()
     {
-        if (isAcTurnedOn && !isOnGround)
-        {
-            normal_temperature_increase = -1.5f;
-        }
-        else if (isAcTurnedOn && isOnGround)
-        {
-            normal_temperature_increase = -3f;
-        }
-        else if (!isAcTurnedOn && !isOnGround)
-        {
-            normal_temperature_increase = 1.5f;
-
-        }
-        else if (!isAcTurnedOn && isOnGround)
+        if (isAcTurnedOn && currentIdle != PlayerIdle.LayOnGround)
         {
             normal_temperature_increase = -1f;
-
         }
-
-        if (isPlayPhone)
+        else if (isAcTurnedOn && currentIdle == PlayerIdle.LayOnGround)
         {
-            normal_satisfaction_increase = 3f;
+            normal_temperature_increase = -2f;
         }
-        else if (!isPlayPhone)
+        else if (!isAcTurnedOn && currentIdle != PlayerIdle.LayOnGround)
+        {
+            normal_temperature_increase = 1f;
+
+        }
+        else if (!isAcTurnedOn && currentIdle == PlayerIdle.LayOnGround)
+        {
+            normal_temperature_increase = -.75f;
+
+        }
+
+        if (currentIdle == PlayerIdle.PlayPhone)
+        {
+            normal_satisfaction_increase = 2f;
+            normal_excitement_increase = 4f;
+        }
+        else if (currentIdle != PlayerIdle.PlayPhone && currentIdle != PlayerIdle.LayOnGround)
+        {
+            normal_satisfaction_increase = -.75f;
+            normal_excitement_increase = -.75f;
+        }
+        else if (currentIdle == PlayerIdle.LayOnGround)
         {
             normal_satisfaction_increase = -1.5f;
         }
 
         if (thirsty < 50)
         {
-            normal_urination_increase = 1.5f;
+            normal_urination_increase = 1f;
         }
         else
         {
-            normal_urination_increase = 0f;
+            normal_urination_increase = .75f;
+
+        }
+
+
+    }
+
+    void UpdateAvatarStatus()
+    {
+        standIdle.SetActive(false);
+        sitIdle.SetActive(false);
+        layDownMidIdle.SetActive(false);
+        layDownLeftIdle.SetActive(false);
+        layDownRightIdle.SetActive(false);
+        layOngroundIdle.SetActive(false);
+        playPhoneIdle.SetActive(false);
+
+        switch (currentIdle)
+        {
+            case PlayerIdle.Stand:
+                standIdle.SetActive(true);
+                break;
+            case PlayerIdle.Sit:
+                sitIdle.SetActive(true);
+                break;
+            case PlayerIdle.LayDownMiddle:
+                layDownMidIdle.SetActive(true);
+                break;
+            case PlayerIdle.LayDownLeft:
+                layDownLeftIdle.SetActive(true);
+                break;
+            case PlayerIdle.LayDownRight:
+                layDownRightIdle.SetActive(true);
+                break;
+            case PlayerIdle.LayOnGround:
+                layOngroundIdle.SetActive(true);
+                break;
+            case PlayerIdle.PlayPhone:
+                playPhoneIdle.SetActive(true);
+                break;
+
         }
     }
 
