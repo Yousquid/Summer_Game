@@ -85,6 +85,67 @@ public class GameManager : MonoBehaviour
     public static bool canInput = true;
     public TextMeshProUGUI inputText;
 
+    private bool hasReportedTem = false;
+    private bool hasReportedThir = false;
+    private bool hasReportedUri = false;
+    private bool hasReportedExci = false;
+    private bool hasReportedSati = false;
+
+    void UpdateReportMessages()
+    {
+        if (!hasReportedTem && temperature <= 20f)
+        {
+            textSystem.AddMessage("It's too cold to sleep now.");
+            hasReportedTem = true;
+
+        }
+        if (!hasReportedTem && temperature >= 80f)
+        {
+            textSystem.AddMessage("It's too hot to sleep now.");
+            hasReportedTem = true;
+
+        }
+        if (temperature > 20f && temperature < 80f && hasReportedTem)
+        {
+            hasReportedTem = false;
+        }
+
+        if (!hasReportedThir && thirsty >= 115f)
+        {
+            textSystem.AddMessage("I'm too thirsty to sleep now.");
+            hasReportedThir = true;
+
+
+        }
+        if (hasReportedThir && thirsty < 115f)
+        {
+            hasReportedThir = false;
+        }
+
+        if (!hasReportedUri && urination >= 115f)
+        {
+            textSystem.AddMessage("I want to go to the bathroom before sleep.");
+            hasReportedUri = true;
+
+        }
+        if (hasReportedUri && urination < 115f) hasReportedUri = false;
+
+        if (!hasReportedExci && excitement >= 90f)
+        {
+            textSystem.AddMessage("I'm high! I dont want to sleep now.");
+            hasReportedExci = true;
+
+        }
+        if (hasReportedExci && excitement < 90f) hasReportedExci = false;
+
+        if (!hasReportedSati && satisfaction <= 10f)
+        {
+            textSystem.AddMessage("So sad bro, cant sleep now.");
+            hasReportedSati = true;
+
+        }
+        if (hasReportedSati && satisfaction > 10f) hasReportedSati = false;
+    }
     void Start()
     {
         UpdateAvatarStatus();
@@ -103,6 +164,7 @@ public class GameManager : MonoBehaviour
         UpdateSliderColor();
         UpdateSleepMessage();
         UpdateConfineValue();
+        UpdateReportMessages();
     }
 
     void SetSliderValue()
@@ -446,10 +508,10 @@ public class GameManager : MonoBehaviour
     void RandomInitialValue()
     {
         temperature = Random.Range(40, 80);
-        thirsty = Random.Range(10, 70);
-        urination = Random.Range(10, 70);
+        thirsty = Random.Range(20, 70);
+        urination = Random.Range(20, 70);
         excitement = Random.Range(10, 70);
-        satisfaction = Random.Range(15, 50);
+        satisfaction = Random.Range(15, 30);
 
     }
     void UpdateDisplay()

@@ -20,8 +20,8 @@ public class ButtonManager : MonoBehaviour
     {
         if (GameManager.canInput)
         {
-            if (guideNote.active == false) { guideNote.SetActive(true); buttonSign.text = "?"; }
-            else if (guideNote.active == true) { guideNote.SetActive(false); buttonSign.text = "X"; }
+            if (guideNote.active == false) { guideNote.SetActive(true); buttonSign.text = "X"; }
+            else if (guideNote.active == true) { guideNote.SetActive(false);  buttonSign.text = "?"; }
         }
     }
 }
