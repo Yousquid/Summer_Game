@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      yousquid._a_room_with_a_bed_AC_a_bed_table_and_a_window_stick_f_f6c78c81-fc2e-4588-bb79-d0028390a54f_0: -3222289602638112698
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
