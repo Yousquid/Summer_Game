@@ -1973,6 +1973,7 @@ GameObject:
   - component: {fileID: 861320327}
   - component: {fileID: 861320326}
   - component: {fileID: 861320328}
+  - component: {fileID: 861320329}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2046,6 +2047,72 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   guideNote: {fileID: 1501152418}
   buttonSign: {fileID: 138910677}
+--- !u!114 &861320329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861320325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 307879e2a224827468d777633b6dd90a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: action_1
+    clip: {fileID: 8300000, guid: 736650ffe8456a64ba63c96b7125c1c9, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_2
+    clip: {fileID: 8300000, guid: 26a17e933b1c0c14b8ac1e767f9100be, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_3
+    clip: {fileID: 8300000, guid: 2aa2b547278b9b9458f8be385dfe00f2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_4
+    clip: {fileID: 8300000, guid: 3e0da9e066a20754cad53cff96d253bb, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_5
+    clip: {fileID: 8300000, guid: 80ea88b7f2ec93f4186bfec43cf2e94f, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_6
+    clip: {fileID: 8300000, guid: 5022c4b37172db84b9b8fa40c1250df2, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: action_7
+    clip: {fileID: 8300000, guid: 2ffeee10997798a4d960549ead536db8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  music:
+  - name: music
+    clip: {fileID: 8300000, guid: 0d5cbd340fd409642b33f9e5423c4637, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  musicSource: {fileID: 0}
+  lastPlayedSFX: {fileID: 0}
+  soundEffectsSources: []
+  mutesounds: 0
 --- !u!1 &905637724
 GameObject:
   m_ObjectHideFlags: 0
@@ -3204,7 +3271,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1719377699}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 45
+  m_MaxValue: 60
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:

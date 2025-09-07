@@ -54,7 +54,6 @@ public class GameManager : MonoBehaviour
     public GameObject playPhoneIdle;
 
 
-
     // INPUT SYSTEM
 
     private List<KeyCode> sitAction = new List<KeyCode>() { KeyCode.D, KeyCode.S, KeyCode.W, KeyCode.W };
@@ -140,7 +139,7 @@ public class GameManager : MonoBehaviour
 
         if (!hasReportedSati && satisfaction <= 10f)
         {
-            textSystem.AddMessage("So sad bro, cant sleep now.");
+            textSystem.AddMessage("I feel so frustrated, cant sleep now.");
             hasReportedSati = true;
 
         }
@@ -150,6 +149,7 @@ public class GameManager : MonoBehaviour
     {
         UpdateAvatarStatus();
         RandomInitialValue();
+        SoundSystem.instance.PlayMusic("music");
     }
 
     // Update is called once per frame
@@ -165,6 +165,7 @@ public class GameManager : MonoBehaviour
         UpdateSleepMessage();
         UpdateConfineValue();
         UpdateReportMessages();
+        EndTest();
     }
 
     void SetSliderValue()
@@ -224,6 +225,7 @@ public class GameManager : MonoBehaviour
     }
     void RegisterInput(KeyCode key)
     {
+
         if (lastInputTime > 0f && Time.time - lastInputTime < MintimeLimit)
         {
             textSystem.AddMessage("It's too fast. Forgive me, please.");
@@ -233,7 +235,9 @@ public class GameManager : MonoBehaviour
         }
 
         currentInput.Add(key);
-        lastInputTime = Time.time; 
+        lastInputTime = Time.time;
+
+        PlayActionSound();
 
         if (CheckCombo(sitAction))
         {
@@ -505,6 +509,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    void PlayActionSound()
+    {
+        int randomer = Random.Range(0, 6);
+        if (randomer == 0) SoundSystem.instance.PlaySound("action_1");
+        if (randomer == 1) SoundSystem.instance.PlaySound("action_2");
+        if (randomer == 2) SoundSystem.instance.PlaySound("action_3");
+        if (randomer == 3) SoundSystem.instance.PlaySound("action_4");
+        if (randomer == 4) SoundSystem.instance.PlaySound("action_5");
+        if (randomer == 5) SoundSystem.instance.PlaySound("action_6");
+        if (randomer == 6) SoundSystem.instance.PlaySound("action_7");
+
+
+    }
+
     void RandomInitialValue()
     {
         temperature = Random.Range(40, 80);
@@ -660,7 +678,12 @@ public class GameManager : MonoBehaviour
     {
         if (temperature >= 20 && temperature <= 80 && thirsty < 115 && urination < 115 && excitement < 90 && satisfaction > 10)
         {
-            return true;
+            if (currentIdle == PlayerIdle.LayDownLeft || currentIdle == PlayerIdle.LayDownMiddle || currentIdle == PlayerIdle.LayDownRight || currentIdle == PlayerIdle.LayOnGround)
+            {
+                return true;
+
+            }
+            return false;
         }
         else
         {
@@ -670,8 +693,6 @@ public class GameManager : MonoBehaviour
 
     void UpdateSliderColor()
     {
-         
-
         if (temperature >= 80)
         {
             tem_fill.color = Color.red;
@@ -711,5 +732,13 @@ public class GameManager : MonoBehaviour
         excitement = Mathf.Clamp(excitement, 0f, 120f);
         satisfaction = Mathf.Clamp(satisfaction, 0f, 120f);
 
+    }
+
+    void EndTest()
+    {
+        if (sleep_progress >= 60)
+        {
+            textSystem.AddMessage("I finally can have a good night, I guess.");
+        }
     }
 }

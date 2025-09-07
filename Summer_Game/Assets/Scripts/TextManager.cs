@@ -31,7 +31,7 @@ public class QueuedTextTyper : MonoBehaviour
     }
 
 
-   
+
 
     private IEnumerator ProcessQueue()
     {
@@ -57,9 +57,11 @@ public class QueuedTextTyper : MonoBehaviour
             yield return new WaitForSeconds(displayTime);
 
             textUI.enabled = false;
-            talkingBar.enabled = false;
             GameManager.canInput = true;
         }
+
+        // 只在所有消息结束后关闭
+        talkingBar.enabled = false;
 
         isShowing = false;
     }

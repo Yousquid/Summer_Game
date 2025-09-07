@@ -18,10 +18,17 @@ public class ButtonManager : MonoBehaviour
 
     public void OnInformationButtonClicked()
     {
-        if (GameManager.canInput)
+        if (!guideNote.activeSelf && GameManager.canInput)
         {
-            if (guideNote.active == false) { guideNote.SetActive(true); buttonSign.text = "X"; }
-            else if (guideNote.active == true) { guideNote.SetActive(false);  buttonSign.text = "?"; }
+            guideNote.SetActive(true);
+            buttonSign.text = "X";
+            GameManager.canInput = false; 
+        }
+        else if (guideNote.activeSelf)
+        {
+            guideNote.SetActive(false);
+            buttonSign.text = "?";
+            GameManager.canInput = true; 
         }
     }
 }
