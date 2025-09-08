@@ -512,7 +512,7 @@ public class GameManager : MonoBehaviour
 
     void PlayActionSound()
     {
-        int randomer = Random.Range(0, 6);
+        int randomer = Random.Range(0, 4);
         if (randomer == 0) SoundSystem.instance.PlaySound("action_1");
         if (randomer == 1) SoundSystem.instance.PlaySound("action_2");
         if (randomer == 2) SoundSystem.instance.PlaySound("action_3");
