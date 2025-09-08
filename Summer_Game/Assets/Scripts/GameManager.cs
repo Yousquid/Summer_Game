@@ -149,7 +149,8 @@ public class GameManager : MonoBehaviour
     {
         UpdateAvatarStatus();
         RandomInitialValue();
-        SoundSystem.instance.PlayMusic("music");
+        //SoundSystem.instance.PlayMusic("music");
+        SoundSystem.instance.PlaySound("music_1");
     }
 
     // Update is called once per frame
@@ -516,9 +517,7 @@ public class GameManager : MonoBehaviour
         if (randomer == 1) SoundSystem.instance.PlaySound("action_2");
         if (randomer == 2) SoundSystem.instance.PlaySound("action_3");
         if (randomer == 3) SoundSystem.instance.PlaySound("action_4");
-        if (randomer == 4) SoundSystem.instance.PlaySound("action_5");
-        if (randomer == 5) SoundSystem.instance.PlaySound("action_6");
-        if (randomer == 6) SoundSystem.instance.PlaySound("action_7");
+       
 
 
     }
@@ -736,7 +735,7 @@ public class GameManager : MonoBehaviour
 
     void EndTest()
     {
-        if (sleep_progress >= 60)
+        if (sleep_progress >= 45)
         {
             textSystem.AddMessage("I finally can have a good night, I guess.");
         }
