@@ -51,11 +51,11 @@ public class AudioPitchEstimator : MonoBehaviour
         audioSource.clip = Microphone.Start(null, true, 5, 48000);
         while (!(Microphone.GetPosition(null) > 0)) { }
         audioSource.Play();
+        audioSource.spatialBlend = 1;
     }
-
+    
     private void Update()
     {
-        print(Estimate(audioSource));
     }
     public float Estimate(AudioSource audioSource)
     {

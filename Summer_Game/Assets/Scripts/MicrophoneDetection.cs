@@ -4,17 +4,23 @@ using System.Collections;
 
 public class MicrophoneDetection : MonoBehaviour
 {
-    private float lowVolume = 0.07f;
-    private float lowVolumeOffset = 0.04f;
+    private float lowVolume = 0.08f;
+    private float lowVolumeOffset = 0.05f;
 
     private float middleVolume = 0.15f;
     private float middleVolumeOffset = 0.05f;
 
     private float highVolume = 0.2f;
 
-    private float minimalSoundJudgePeroid = 0.667f;
+    private float lowPitch = 90f;
+    private float lowPitchOffset = 40f;
 
-    private float currentVolumeRMS = 0f;
+    private float middlePitch = 180f;
+    private float middlePitchOffset = 50f;
+
+    private float highPitch = 230f;
+
+    private float minimalSoundJudgePeroid = 0.667f;
 
     public AudioPitchEstimator audioPitchEstimator;
 
@@ -23,11 +29,23 @@ public class MicrophoneDetection : MonoBehaviour
     private const int sampleSize = 1024;
     private float[] samples = new float[sampleSize];
 
-    private float accumulatedVolume = 0f;
-    private int sampleCount = 0;
+    private List<float> collectedVolumes = new List<float>();
+    private List<float> collectedPitches = new List<float>();
 
     private float beatTime = 0;
 
+    private bool hasStarted = false;
+    public enum VolumeLevel { Low, Middle, High, None }
+    public enum PitchLevel { Low, Middle, High, None }
+
+    [System.Serializable]
+    public class BeatRequirement
+    {
+        public VolumeLevel requiredVolume;
+        public PitchLevel requiredPitch;
+    }
+    public BeatRequirement[] score;
+    private int currentBeatIndex = 0;
 
 
     void Start()
@@ -36,13 +54,24 @@ public class MicrophoneDetection : MonoBehaviour
         audioPitchEstimator = GetComponent<AudioPitchEstimator>();
         audioSource.loop = true;
         audioSource.clip = Microphone.Start(null, true, 5, sampleRate);
+       
+
     }
 
     
 
     void Update()
     {
-        RunPeroidVolumeDictation();
+        if (hasStarted)
+        {
+            RunPeroidVolumeDictation();
+            RunPeroidPitchDetection();
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            hasStarted = true;
+        }
+        
         //print(audioPitchEstimator.Estimate(audioSource));
     }
 
@@ -53,24 +82,72 @@ public class MicrophoneDetection : MonoBehaviour
         if (beatTime < minimalSoundJudgePeroid)
         {
             float rms = GetCurrentVolume();
-            currentVolumeRMS = rms;
-            accumulatedVolume += rms;
-            sampleCount++;
+           // currentVolumeRMS = rms;
+            collectedVolumes.Add(rms);
+            
         }
         else if (beatTime >= minimalSoundJudgePeroid)
         {
-            //print(GetAveragePeroidVolume());
-            beatTime = 0f;
+            
         }
        
     }
+
+    void RunPeroidPitchDetection()
+    {
+        if (beatTime < minimalSoundJudgePeroid)
+        {
+            float newHZ = audioPitchEstimator.Estimate(audioSource);
+            collectedPitches.Add(newHZ);
+
+        }
+        else if (beatTime >= minimalSoundJudgePeroid)
+        {
+            EndofBeat();
+        }
+    }
+
+    void EndofBeat()
+    {
+        float avgVolume = GetAveragePeroidVolume();
+        float avgPitch = GetAveragePeroidPitch();
+
+        List<VolumeLevel> playerVolumes = JudgeVolume(avgVolume);
+        List<PitchLevel> playerPitches = JudgePitch(avgPitch);
+
+        if (currentBeatIndex < score.Length)
+        {
+            var expected = score[currentBeatIndex];
+
+            Debug.Log($"Beat {currentBeatIndex} => " +
+                      $"Volume: {string.Join(",", playerVolumes)} (expect {expected.requiredVolume}) | " +
+                      $"Pitch: {string.Join(",", playerPitches)} (expect {expected.requiredPitch}) | " );
+
+            currentBeatIndex++;
+        }
+
+        beatTime = 0f;
+    }
+    float GetAveragePeroidPitch()
+    {
+        collectedPitches.Sort();
+        var trimmed = collectedPitches.GetRange(2, collectedPitches.Count - 4);
+        float sum = 0f;
+        foreach (var v in trimmed) sum += v;
+        float averagePitch = sum / trimmed.Count;
+        collectedPitches.Clear();
+        return averagePitch;
+    }
     float GetAveragePeroidVolume()
     {
-        float averageVolume = accumulatedVolume / sampleCount;
-        currentVolumeRMS = 0;
-        accumulatedVolume = 0;
-        sampleCount = 0;
+        collectedVolumes.Sort();
+        var trimmed = collectedVolumes.GetRange(2, collectedVolumes.Count - 4);
+        float sum = 0f;
+        foreach (var v in trimmed) sum += v;
+        float averageVolume = sum / trimmed.Count;
+        collectedVolumes.Clear();
         return averageVolume;
+     
 
     }
 
@@ -89,5 +166,34 @@ public class MicrophoneDetection : MonoBehaviour
         return Mathf.Sqrt(sum / data.Length);
     }
 
-    
+    bool InRange(float value, float center, float offset)
+    {
+        return value >= (center - offset) && value <= (center + offset);
+    }
+
+    List<VolumeLevel> JudgeVolume(float volume)
+    {
+        List<VolumeLevel> results = new List<VolumeLevel>();
+
+        if (InRange(volume, lowVolume, lowVolumeOffset)) results.Add(VolumeLevel.Low);
+        if (InRange(volume, middleVolume, middleVolumeOffset)) results.Add(VolumeLevel.Middle);
+        if (volume >= highVolume) results.Add(VolumeLevel.High);
+
+        if (results.Count == 0) results.Add(VolumeLevel.None);
+
+        return results;
+    }
+
+    List<PitchLevel> JudgePitch(float pitch)
+    {
+        List<PitchLevel> results = new List<PitchLevel>();
+
+        if (InRange(pitch, lowPitch, lowPitchOffset)) results.Add(PitchLevel.Low);
+        if (InRange(pitch, middlePitch, middlePitchOffset)) results.Add(PitchLevel.Middle);
+        if (pitch >= highPitch) results.Add(PitchLevel.High);
+
+        if (results.Count == 0) results.Add(PitchLevel.None);
+
+        return results;
+    }
 }
