@@ -16,7 +16,12 @@ public class MicrophoneDetection : MonoBehaviour
 
     private float currentVolumeRMS = 0f;
 
+    public AudioPitchEstimator audioPitchEstimator;
+
     private AudioSource audioSource;
+    private int sampleRate = 48000;
+    private const int sampleSize = 1024;
+    private float[] samples = new float[sampleSize];
 
     private float accumulatedVolume = 0f;
     private int sampleCount = 0;
@@ -28,10 +33,9 @@ public class MicrophoneDetection : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        audioPitchEstimator = GetComponent<AudioPitchEstimator>();
         audioSource.loop = true;
-        audioSource.clip = Microphone.Start(null, true, 5, 48000);
-
-
+        audioSource.clip = Microphone.Start(null, true, 5, sampleRate);
     }
 
     
@@ -39,6 +43,7 @@ public class MicrophoneDetection : MonoBehaviour
     void Update()
     {
         RunPeroidVolumeDictation();
+        //print(audioPitchEstimator.Estimate(audioSource));
     }
 
 
@@ -54,7 +59,7 @@ public class MicrophoneDetection : MonoBehaviour
         }
         else if (beatTime >= minimalSoundJudgePeroid)
         {
-            print(GetAveragePeroidVolume());
+            //print(GetAveragePeroidVolume());
             beatTime = 0f;
         }
        
@@ -83,4 +88,6 @@ public class MicrophoneDetection : MonoBehaviour
 
         return Mathf.Sqrt(sum / data.Length);
     }
+
+    
 }
