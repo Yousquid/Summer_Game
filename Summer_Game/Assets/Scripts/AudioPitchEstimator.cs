@@ -53,7 +53,11 @@ public class AudioPitchEstimator : MonoBehaviour
         audioSource.Play();
         audioSource.spatialBlend = 1;
     }
-    
+
+    public float GetCurrentPitch()
+    {
+        return Estimate(audioSource);
+    }
     private void Update()
     {
     }
