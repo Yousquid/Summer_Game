@@ -39,6 +39,7 @@ public class AudioVisualizer : MonoBehaviour
     {
         UpdateSliderValue();
         UpdateInidatorPos();
+        UpdateScriptImage();
     }
 
     void UpdateSliderValue()
@@ -108,6 +109,13 @@ public class AudioVisualizer : MonoBehaviour
             indicator.transform.position = indicator_4.position;
 
         }
+    }
+
+    void UpdateScriptImage()
+    {
+        int index = microphoneDetection.currentBeatIndex / 4;
+        index = Mathf.Clamp(index, 0, scripts.Count - 1);
+        script.sprite = scripts[index];
     }
 
 
