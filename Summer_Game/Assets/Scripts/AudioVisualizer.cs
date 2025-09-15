@@ -26,6 +26,16 @@ public class AudioVisualizer : MonoBehaviour
 
     public SpriteRenderer script;
     public List<Sprite> scripts;
+    public string startWords_one;
+    public string startWords_two;
+    public string startWords_three;
+
+    public string illustrationWords;
+
+    public List<Sprite> tutorScripts;
+    public SpriteRenderer mustachImage;
+
+    public GameObject backgroundOpera;
 
     // Start is called once before the firt execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,6 +50,7 @@ public class AudioVisualizer : MonoBehaviour
         UpdateSliderValue();
         UpdateInidatorPos();
         UpdateScriptImage();
+        UpdateTutorialScript();
     }
 
     void UpdateSliderValue()
@@ -113,11 +124,48 @@ public class AudioVisualizer : MonoBehaviour
 
     void UpdateScriptImage()
     {
-        int index = microphoneDetection.currentBeatIndex / 4;
-        index = Mathf.Clamp(index, 0, scripts.Count - 1);
-        script.sprite = scripts[index];
+        if (microphoneDetection.hasStarted)
+        {
+            int index = microphoneDetection.currentBeatIndex / 4;
+            index = Mathf.Clamp(index, 0, scripts.Count - 1);
+            script.sprite = scripts[index];
+        }
+        
     }
 
-
+    void UpdateTutorialScript()
+    {
+        if (microphoneDetection.tutorialSteps == 2)
+        {
+            indicateWord.text = startWords_one;
+            script.sprite = tutorScripts[0];
+        }
+        if (microphoneDetection.tutorialSteps == 3)
+        {
+            indicateWord.text = startWords_two;
+            script.sprite = tutorScripts[1];
+        }
+        if (microphoneDetection.tutorialSteps == 4)
+        {
+            indicateWord.text = startWords_three;
+            script.sprite = tutorScripts[2];
+        }
+        if (microphoneDetection.tutorialSteps == 5)
+        {
+            indicateWord.text = illustrationWords;
+            script.enabled = false;
+            mustachImage.enabled = true;
+            indicator.SetActive(false);
+        }
+        if (microphoneDetection.tutorialSteps == 6)
+        {
+            indicateWord.text = "Sing!";
+            script.enabled = true;
+            mustachImage.enabled = false;
+            indicator.SetActive(true);
+            backgroundOpera.SetActive(true);
+        }
+    }
+    
     
 }

@@ -37,7 +37,9 @@ public class MicrophoneDetection : MonoBehaviour
     private float beatTime = 0;
     private int beatCount = 0;
 
-    private bool hasStarted = false;
+    public int tutorialSteps = 1;
+
+    public bool hasStarted = false;
     public enum VolumeLevel { Low, Middle, High, None, Any }
     public enum PitchLevel { Low, Middle, High, None, Any }
 
@@ -54,6 +56,7 @@ public class MicrophoneDetection : MonoBehaviour
 
     public int indicator_Pos = 1;
 
+    public int health = 10;
 
     void Start()
     {
@@ -70,18 +73,13 @@ public class MicrophoneDetection : MonoBehaviour
 
     void Update()
     {
-        if (hasStarted)
-        {
+        
             RunPeroidVolumeDictation();
             RunPeroidPitchDetection();
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            hasStarted = true;
-            SoundSystem.instance.PlaySound("score_1");
-        }
         
-        //print(audioPitchEstimator.Estimate(audioSource));
+       
+        
+        print(tutorialSteps);
     }
 
 
@@ -118,15 +116,18 @@ public class MicrophoneDetection : MonoBehaviour
 
     void EndofBeat()
     {
-        beatCount++;
-        indicator_Pos++;
+        if (hasStarted)
+        {
+            beatCount++; indicator_Pos++;
+        } 
+
         float avgVolume = GetAveragePeroidVolume();
         float avgPitch = GetAveragePeroidPitch();
 
         List<VolumeLevel> playerVolumes = JudgeVolume(avgVolume);
         List<PitchLevel> playerPitches = JudgePitch(avgPitch);
 
-        if (currentBeatIndex < score.Length)
+        if (currentBeatIndex < score.Length && hasStarted)
         {
             var expected = score[currentBeatIndex];
 
@@ -136,15 +137,49 @@ public class MicrophoneDetection : MonoBehaviour
             }
             else
             {
-                audioVisualizer.indicateWord.text = "Wrong";
+                audioVisualizer.indicateWord.text = "You slid down on his face a little.";
+                health -= 1;
             }
 
             currentBeatIndex++;
         }
-        if (beatCount == 1)
+        if (tutorialSteps == 1)
         {
-            beatCount = 0;
-            //SoundSystem.instance.PlaySound("beat");
+            if (playerVolumes.Contains(VolumeLevel.High))
+            {
+                tutorialSteps += 1;
+            }
+        }
+        if (tutorialSteps == 2)
+        {
+            if (playerPitches.Contains(PitchLevel.High))
+            {
+                tutorialSteps += 1;
+            }
+        }
+        if (tutorialSteps == 3)
+        {
+            if (playerPitches.Contains(PitchLevel.Low))
+            {
+                tutorialSteps += 1;
+            }
+        }
+        if (tutorialSteps == 4)
+        {
+            if (playerPitches.Contains(PitchLevel.Middle))
+            {
+                tutorialSteps += 1;
+            }
+        }
+        if (tutorialSteps == 5)
+        {
+            if (playerVolumes.Contains(VolumeLevel.High))
+            {
+                tutorialSteps += 1;
+                hasStarted = true;
+                SoundSystem.instance.PlaySound("score_1");
+
+            }
         }
         if (indicator_Pos == 5)
         {
