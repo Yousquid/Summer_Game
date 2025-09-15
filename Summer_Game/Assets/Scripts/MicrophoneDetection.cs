@@ -79,7 +79,7 @@ public class MicrophoneDetection : MonoBehaviour
         
        
         
-        print(tutorialSteps);
+        //print(tutorialSteps);
     }
 
 
@@ -176,10 +176,26 @@ public class MicrophoneDetection : MonoBehaviour
             if (playerVolumes.Contains(VolumeLevel.High))
             {
                 tutorialSteps += 1;
-                hasStarted = true;
-                SoundSystem.instance.PlaySound("score_1");
+                
+            }
+        }
+        if (tutorialSteps == 6)
+        {
+            if (playerPitches.Contains(PitchLevel.High))
+            {
+                tutorialSteps += 1;
+                
 
             }
+        }
+        if (tutorialSteps == 7)
+        {
+
+            tutorialSteps++;
+            hasStarted = true;
+                SoundSystem.instance.PlaySound("score_1");
+
+            
         }
         if (indicator_Pos == 5)
         {

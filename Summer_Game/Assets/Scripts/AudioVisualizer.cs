@@ -51,6 +51,11 @@ public class AudioVisualizer : MonoBehaviour
         UpdateInidatorPos();
         UpdateScriptImage();
         UpdateTutorialScript();
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            ScreenShake.instance.Shake(.1f, .5f);
+        }
     }
 
     void UpdateSliderValue()
@@ -159,11 +164,15 @@ public class AudioVisualizer : MonoBehaviour
         }
         if (microphoneDetection.tutorialSteps == 6)
         {
-            indicateWord.text = "Sing!";
+            indicateWord.text = "Prepare and check the script first, sing in a high pitch to go!";
             script.enabled = true;
             mustachImage.enabled = false;
             indicator.SetActive(true);
             backgroundOpera.SetActive(true);
+        }
+        if (microphoneDetection.tutorialSteps == 7)
+        {
+            
         }
     }
     
