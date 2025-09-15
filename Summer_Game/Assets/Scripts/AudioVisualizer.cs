@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class AudioVisualizer : MonoBehaviour
 {
     public Image volumeFill;
@@ -13,6 +14,15 @@ public class AudioVisualizer : MonoBehaviour
     private float maxVolume = 0.20f;
     private float maxPitch = 300f;
 
+    public TextMeshProUGUI indicateWord;
+
+    public GameObject indicator;
+    public Transform indicator_1;
+    public Transform indicator_2;
+    public Transform indicator_3;
+    public Transform indicator_4;
+
+
     // Start is called once before the firt execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,6 +34,7 @@ public class AudioVisualizer : MonoBehaviour
     void Update()
     {
         UpdateSliderValue();
+        UpdateInidatorPos();
     }
 
     void UpdateSliderValue()
@@ -69,6 +80,29 @@ public class AudioVisualizer : MonoBehaviour
         else if (currentPitch >= 230f)
         {
             pitchFill.color = Color.red;
+        }
+    }
+
+    void UpdateInidatorPos()
+    {
+        if (microphoneDetection.indicator_Pos == 1)
+        {
+            indicator.transform.position = indicator_1.position;
+        }
+        if (microphoneDetection.indicator_Pos == 2)
+        {
+            indicator.transform.position = indicator_2.position;
+
+        }
+        if (microphoneDetection.indicator_Pos == 3)
+        {
+            indicator.transform.position = indicator_3.position;
+
+        }
+        if (microphoneDetection.indicator_Pos == 4)
+        {
+            indicator.transform.position = indicator_4.position;
+
         }
     }
 

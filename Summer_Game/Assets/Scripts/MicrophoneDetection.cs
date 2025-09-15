@@ -22,7 +22,7 @@ public class MicrophoneDetection : MonoBehaviour
 
     private float highPitch = 230f;
 
-    private float minimalSoundJudgePeroid = .6777F;
+    private float minimalSoundJudgePeroid = .83f;
 
     public AudioPitchEstimator audioPitchEstimator;
 
@@ -41,7 +41,7 @@ public class MicrophoneDetection : MonoBehaviour
     public enum VolumeLevel { Low, Middle, High, None, Any }
     public enum PitchLevel { Low, Middle, High, None, Any }
 
-    public TextMeshProUGUI indicatorText;
+    public AudioVisualizer audioVisualizer;
 
     [System.Serializable]
     public class BeatRequirement
@@ -52,11 +52,14 @@ public class MicrophoneDetection : MonoBehaviour
     public BeatRequirement[] score;
     private int currentBeatIndex = 0;
 
+    public int indicator_Pos = 1;
+
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         audioPitchEstimator = GetComponent<AudioPitchEstimator>();
+        audioVisualizer = GetComponent<AudioVisualizer>();
         audioSource.loop = true;
         audioSource.clip = Microphone.Start(null, true, 5, sampleRate);
        
@@ -115,6 +118,7 @@ public class MicrophoneDetection : MonoBehaviour
     void EndofBeat()
     {
         beatCount++;
+        indicator_Pos++;
         float avgVolume = GetAveragePeroidVolume();
         float avgPitch = GetAveragePeroidPitch();
 
@@ -125,16 +129,25 @@ public class MicrophoneDetection : MonoBehaviour
         {
             var expected = score[currentBeatIndex];
 
-            Debug.Log($"Beat {currentBeatIndex} => " +
-                      $"Volume: {string.Join(",", playerVolumes)} (expect {expected.requiredVolume}) | " +
-                      $"Pitch: {string.Join(",", playerPitches)} (expect {expected.requiredPitch}) | " );
+            if (playerVolumes.Contains(expected.requiredVolume) && playerPitches.Contains(expected.requiredPitch) )
+            {
+                audioVisualizer.indicateWord.text = "Good";
+            }
+            else
+            {
+                audioVisualizer.indicateWord.text = "Wrong";
+            }
 
             currentBeatIndex++;
         }
         if (beatCount == 1)
         {
-            SoundSystem.instance.PlaySound("beat");
             beatCount = 0;
+            SoundSystem.instance.PlaySound("beat");
+        }
+        if (indicator_Pos == 5)
+        {
+            indicator_Pos = 1;
         }
 
         beatTime = 0f;
@@ -185,12 +198,16 @@ public class MicrophoneDetection : MonoBehaviour
     List<VolumeLevel> JudgeVolume(float volume)
     {
         List<VolumeLevel> results = new List<VolumeLevel>();
-        results.Add(VolumeLevel.Any);
-        if (InRange(volume, lowVolume, lowVolumeOffset)) results.Add(VolumeLevel.Low);
-        if (InRange(volume, middleVolume, middleVolumeOffset)) results.Add(VolumeLevel.Middle);
-        if (volume >= highVolume) results.Add(VolumeLevel.High);
 
-        if (results.Count == 0) results.Add(VolumeLevel.None);
+        if (volume <= 0.001f)  
+        {
+            results.Add(VolumeLevel.None);
+            return results;
+        }
+        if (InRange(volume, lowVolume, lowVolumeOffset)) results.Add(VolumeLevel.Low); results.Add(VolumeLevel.Any); 
+        if (InRange(volume, middleVolume, middleVolumeOffset)) results.Add(VolumeLevel.Middle); results.Add(VolumeLevel.Any);
+        if (volume >= highVolume) results.Add(VolumeLevel.High); results.Add(VolumeLevel.Any);
+
 
         return results;
     }
@@ -198,12 +215,16 @@ public class MicrophoneDetection : MonoBehaviour
     List<PitchLevel> JudgePitch(float pitch)
     {
         List<PitchLevel> results = new List<PitchLevel>();
-        results.Add(PitchLevel.Any);
-        if (InRange(pitch, lowPitch, lowPitchOffset)) results.Add(PitchLevel.Low);
-        if (InRange(pitch, middlePitch, middlePitchOffset)) results.Add(PitchLevel.Middle);
-        if (pitch >= highPitch) results.Add(PitchLevel.High);
 
-        if (results.Count == 0) results.Add(PitchLevel.None);
+        if (float.IsNaN(pitch) || pitch <= 20f)
+        {
+            results.Add(PitchLevel.None);
+            return results;
+        }
+
+        if (InRange(pitch, lowPitch, lowPitchOffset)) results.Add(PitchLevel.Low); results.Add(PitchLevel.Any);
+        if (InRange(pitch, middlePitch, middlePitchOffset)) results.Add(PitchLevel.Middle); results.Add(PitchLevel.Any);
+        if (pitch >= highPitch) results.Add(PitchLevel.High); results.Add(PitchLevel.Any);
 
         return results;
     }
