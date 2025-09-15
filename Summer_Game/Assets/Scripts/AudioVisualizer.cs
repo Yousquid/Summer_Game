@@ -37,11 +37,19 @@ public class AudioVisualizer : MonoBehaviour
 
     public GameObject backgroundOpera;
 
+    public GameObject mustach;
+    public GameObject mustachwords;
+    private int lastHealth;  
+
+
     // Start is called once before the firt execution of Update after the MonoBehaviour is created
     void Start()
     {
         pitchEstimator = GetComponent<AudioPitchEstimator>();
         microphoneDetection = GetComponent<MicrophoneDetection>();
+        InvokeRepeating(nameof(UpdateScreenShake), 0f, 0.1f);
+        lastHealth = microphoneDetection.health;
+
     }
 
     // Update is called once per frame
@@ -51,11 +59,19 @@ public class AudioVisualizer : MonoBehaviour
         UpdateInidatorPos();
         UpdateScriptImage();
         UpdateTutorialScript();
+        UpdateMustachStatus();
 
         if (Input.GetKeyDown(KeyCode.K))
         {
             ScreenShake.instance.Shake(.1f, .5f);
         }
+    }
+
+    void UpdateScreenShake()
+    {
+        float currentVolume = microphoneDetection.GetCurrentVolume();
+        float normalizedVolume = Mathf.Clamp01(currentVolume / maxVolume);
+        ScreenShake.instance.Shake(.1f, normalizedVolume/2);
     }
 
     void UpdateSliderValue()
@@ -162,19 +178,35 @@ public class AudioVisualizer : MonoBehaviour
             mustachImage.enabled = true;
             indicator.SetActive(false);
         }
-        if (microphoneDetection.tutorialSteps == 6)
+        if (microphoneDetection.tutorialSteps == 6 || Input.GetKeyDown(KeyCode.K))
         {
-            indicateWord.text = "Prepare and check the script first, sing in a high pitch to go!";
+            microphoneDetection.tutorialSteps = 6;
+            indicateWord.text = "Prepare and check the script first, sing in a low pitch to go!";
             script.enabled = true;
             mustachImage.enabled = false;
             indicator.SetActive(true);
             backgroundOpera.SetActive(true);
+            script.sprite = scripts[0];
+            mustach.SetActive(true);
+            mustachwords.SetActive(true);
         }
         if (microphoneDetection.tutorialSteps == 7)
         {
             
         }
     }
-    
-    
+
+    void UpdateMustachStatus()
+    {
+        int currentHealth = microphoneDetection.health;
+        if (currentHealth != lastHealth)
+        {
+            mustach.transform.rotation *= Quaternion.Euler(0, 0, -10f);
+            lastHealth = currentHealth;
+
+        }
+
+    }
+
+
 }

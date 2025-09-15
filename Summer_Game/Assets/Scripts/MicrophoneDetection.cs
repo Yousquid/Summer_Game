@@ -56,7 +56,7 @@ public class MicrophoneDetection : MonoBehaviour
 
     public int indicator_Pos = 1;
 
-    public int health = 10;
+    public int health = 0;
 
     void Start()
     {
@@ -76,9 +76,10 @@ public class MicrophoneDetection : MonoBehaviour
         
             RunPeroidVolumeDictation();
             RunPeroidPitchDetection();
-        
-       
-        
+        EndGameCheck();
+
+
+
         //print(tutorialSteps);
     }
 
@@ -114,9 +115,20 @@ public class MicrophoneDetection : MonoBehaviour
         }
     }
 
+    void EndGameCheck()
+    {
+        if (health >= 10)
+        {
+            audioVisualizer.indicateWord.text = "You slid off from his face, you lose, try singing more precise next time.";
+        }
+        else if (currentBeatIndex >= score.Length && health < 10)
+        {
+            audioVisualizer.indicateWord.text = "You won. A great first show for a male singer's fake mustach!";
+        }
+    }
     void EndofBeat()
     {
-        if (hasStarted)
+        if (hasStarted && currentBeatIndex < score.Length && health < 10)
         {
             beatCount++; indicator_Pos++;
         } 
@@ -138,7 +150,7 @@ public class MicrophoneDetection : MonoBehaviour
             else
             {
                 audioVisualizer.indicateWord.text = "You slid down on his face a little.";
-                health -= 1;
+                health += 1;
             }
 
             currentBeatIndex++;
@@ -181,7 +193,7 @@ public class MicrophoneDetection : MonoBehaviour
         }
         if (tutorialSteps == 6)
         {
-            if (playerPitches.Contains(PitchLevel.High))
+            if (playerPitches.Contains(PitchLevel.Low))
             {
                 tutorialSteps += 1;
                 
