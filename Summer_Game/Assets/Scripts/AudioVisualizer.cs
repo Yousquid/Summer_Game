@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.Collections;
 public class AudioVisualizer : MonoBehaviour
 {
     public Image volumeFill;
@@ -22,6 +24,8 @@ public class AudioVisualizer : MonoBehaviour
     public Transform indicator_3;
     public Transform indicator_4;
 
+    public SpriteRenderer script;
+    public List<Sprite> scripts;
 
     // Start is called once before the firt execution of Update after the MonoBehaviour is created
     void Start()
@@ -105,6 +109,7 @@ public class AudioVisualizer : MonoBehaviour
 
         }
     }
+
 
     
 }

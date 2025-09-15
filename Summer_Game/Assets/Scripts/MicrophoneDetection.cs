@@ -50,7 +50,7 @@ public class MicrophoneDetection : MonoBehaviour
         public PitchLevel requiredPitch;
     }
     public BeatRequirement[] score;
-    private int currentBeatIndex = 0;
+    public int currentBeatIndex = 0;
 
     public int indicator_Pos = 1;
 
@@ -78,6 +78,7 @@ public class MicrophoneDetection : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             hasStarted = true;
+            SoundSystem.instance.PlaySound("score_1");
         }
         
         //print(audioPitchEstimator.Estimate(audioSource));
@@ -143,7 +144,7 @@ public class MicrophoneDetection : MonoBehaviour
         if (beatCount == 1)
         {
             beatCount = 0;
-            SoundSystem.instance.PlaySound("beat");
+            //SoundSystem.instance.PlaySound("beat");
         }
         if (indicator_Pos == 5)
         {

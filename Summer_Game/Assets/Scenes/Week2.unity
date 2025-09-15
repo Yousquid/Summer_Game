@@ -2124,21 +2124,35 @@ MonoBehaviour:
   audioVisualizer: {fileID: 0}
   score:
   - requiredVolume: 4
-    requiredPitch: 4
+    requiredPitch: 0
   - requiredVolume: 4
-    requiredPitch: 4
+    requiredPitch: 0
   - requiredVolume: 4
-    requiredPitch: 4
+    requiredPitch: 1
   - requiredVolume: 4
-    requiredPitch: 4
-  - requiredVolume: 3
-    requiredPitch: 3
-  - requiredVolume: 3
-    requiredPitch: 3
-  - requiredVolume: 3
-    requiredPitch: 3
-  - requiredVolume: 3
-    requiredPitch: 3
+    requiredPitch: 0
+  - requiredVolume: 4
+    requiredPitch: 1
+  - requiredVolume: 4
+    requiredPitch: 1
+  - requiredVolume: 2
+    requiredPitch: 2
+  - requiredVolume: 2
+    requiredPitch: 2
+  - requiredVolume: 4
+    requiredPitch: 1
+  - requiredVolume: 4
+    requiredPitch: 0
+  - requiredVolume: 4
+    requiredPitch: 1
+  - requiredVolume: 4
+    requiredPitch: 0
+  - requiredVolume: 4
+    requiredPitch: 1
+  - requiredVolume: 4
+    requiredPitch: 0
+  - requiredVolume: 2
+    requiredPitch: 2
   indicator_Pos: 1
 --- !u!4 &2038465807
 Transform:
@@ -2288,6 +2302,12 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+  - name: score_1
+    clip: {fileID: 8300000, guid: 8dced6e554899a0408bd430a755d94b4, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
   music: []
   musicSource: {fileID: 0}
   lastPlayedSFX: {fileID: 0}
@@ -2317,6 +2337,12 @@ MonoBehaviour:
   indicator_2: {fileID: 2102828459}
   indicator_3: {fileID: 1571506308}
   indicator_4: {fileID: 1970436345}
+  script: {fileID: 1274839079}
+  scripts:
+  - {fileID: -855298285791758126, guid: 96038a24e4de5a6468fc535f7d0d3535, type: 3}
+  - {fileID: 6937817954938267909, guid: 9b85d03e740eace4dbd6eeceafac3e00, type: 3}
+  - {fileID: -6470460504253458178, guid: bf95c63244ee6864b9bb2ff0fbef9a6d, type: 3}
+  - {fileID: -4178046375966092550, guid: 85ea3d39631b9924c9889bb3f09cb9c0, type: 3}
 --- !u!1 &2090095486
 GameObject:
   m_ObjectHideFlags: 0
