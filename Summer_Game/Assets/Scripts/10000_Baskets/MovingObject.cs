@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MovingObject : MonoBehaviour
 {
-    public float moveSpeed = 3f;          
+    public float moveSpeed = .75f;          
     public Collider2D targetCollider;   
 
     private bool isColliding = false;
