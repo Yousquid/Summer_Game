@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      istockphoto-160350753-612x612_0: 1581015223027465538
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

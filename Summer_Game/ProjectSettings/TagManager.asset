@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Belt
   - BeltEnd
+  - Light
+  - BurnPlace
+  - SavePlace
   layers:
   - Default
   - TransparentFX
@@ -15,8 +18,8 @@ TagManager:
   - UI
   - Forbidden Area
   - Basket
-  - 
-  - 
+  - Inner
+  - Marker
   - 
   - 
   - 

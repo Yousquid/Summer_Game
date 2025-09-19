@@ -12,7 +12,7 @@ public class BeltAnimation : MonoBehaviour
     }
     void Update()
     {
-        if ( Input.GetKey(KeyCode.D))
+        if ( Input.GetKey(KeyCode.D) && !WorkManager.isLightOn)
         {
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
@@ -24,7 +24,6 @@ public class BeltAnimation : MonoBehaviour
         if (collision == targetCollider)
         {
             transform.position = teleportPosition.position;
-            print("11");
         }
     }
 

@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      broken_basket3_0: 1561118245525109002
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

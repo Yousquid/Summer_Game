@@ -13,7 +13,7 @@ public class MovingObject : MonoBehaviour
     }
     void Update()
     {
-        if (isColliding && Input.GetKey(KeyCode.D))
+        if (isColliding && Input.GetKey(KeyCode.D) && !WorkManager.isLightOn)
         {
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DragObjects : MonoBehaviour
+public class DragBasket : MonoBehaviour
 {
     private Vector3 offset;
     private Camera mainCam;
@@ -10,18 +10,16 @@ public class DragObjects : MonoBehaviour
     private Collider2D thisCollider;
 
     private Rect allowedArea = new Rect(-5.7F, -2.5F, 11F, 9F);
-    private string burnTag = "BurnPlace";
-    private string saveTag = "SavePlace";
-    private GameObject burnStove;
-    private GameObject saveStove;
+    private GameObject innerObject;
+    
+
 
 
     void Start()
     {
         mainCam = Camera.main;
         thisCollider = GetComponent<Collider2D>();
-        burnStove = GameObject.FindWithTag(burnTag).GetComponent<GameObject>();
-        saveStove = GameObject.FindWithTag(saveTag).GetComponent<GameObject>();
+        innerObject = transform.GetChild(0).gameObject;
 
     }
 
@@ -34,7 +32,7 @@ public class DragObjects : MonoBehaviour
 
     void OnMouseDrag()
     {
-        if (isDragging )
+        if (isDragging && !WorkManager.isLightOn)
         {
             Vector3 mousePos = GetMouseWorldPos();
             Vector3 newPos = mousePos + offset;
@@ -49,7 +47,6 @@ public class DragObjects : MonoBehaviour
     void OnMouseUp()
     {
         isDragging = false;
-        
     }
 
     Vector3 GetMouseWorldPos()
@@ -61,25 +58,28 @@ public class DragObjects : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == saveTag)
-        {
-            saveStove.GetComponent<SpriteRenderer>().enabled = true;
-        }
-        if (collision.tag == burnTag)
-        {
-            burnStove.GetComponent<SpriteRenderer>().enabled = true;
+        if (collision.tag == "Light" && innerObject != null)
+        { 
+            
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void Update()
     {
-        if (collision.tag == saveTag)
+        if (WorkManager.isLightOn)
         {
-            saveStove.GetComponent<SpriteRenderer>().enabled = false;
+            Rigidbody2D rigidbody = this.GetComponent<Rigidbody2D>();
+            rigidbody.gravityScale = 0;
+            PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
+            collider.enabled = false;
+            innerObject.SetActive(true);
+            innerObject.transform.SetParent(null, true);
         }
-        if (collision.tag == burnTag)
-        {
-            burnStove.GetComponent<SpriteRenderer>().enabled = false;
+        else if (!WorkManager.isLightOn) {
+            Rigidbody2D rigidbody = this.GetComponent<Rigidbody2D>();
+            rigidbody.gravityScale = 1;
+            PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
+            collider.enabled = true;
         }
     }
 }
