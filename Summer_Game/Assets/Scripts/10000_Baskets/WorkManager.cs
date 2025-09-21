@@ -10,15 +10,27 @@ public class WorkManager : MonoBehaviour
     public static bool isLightOn = false;
     public List<GameObject> inventoryList;
     public List<Transform> inventoryListPosition;
+
+    public GameObject talkingBar;
+    public TextMeshProUGUI talkingText;
+    private string currentTalkingText;
+    public GameObject buttons;
+    private GameObject currentObject;
+    private bool isAskingKeeping;
+    private bool isAskingDestroying;
+
+
     void Start()
     {
-        
+        buttons.SetActive(false);
+        talkingBar.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
         LightControl();
+        talkingText.text = currentTalkingText;
     }
 
     void LightControl()
@@ -36,13 +48,31 @@ public class WorkManager : MonoBehaviour
 
     }
 
-    public void AddToIventoryList(GameObject gameObject)
+    private void AddToIventoryList(GameObject gameObject)
     {
         inventoryList.Add(gameObject);
         SetInventoryPositions(); 
 
     }
 
+    public void KeepObjectInquiry(GameObject gameObject)
+    {
+        talkingBar.SetActive(true);
+        buttons.SetActive(true);
+        currentTalkingText = gameObject.GetComponent<DragObjects>().description + " Do you want to keep it?";
+        currentObject = gameObject;
+        isAskingKeeping = true;
+    }
+
+
+    public void DestroyObjectInquiry(GameObject gameObject)
+    {
+        talkingBar.SetActive(true);
+        buttons.SetActive(true);
+        currentTalkingText = gameObject.GetComponent<DragObjects>().description + " Do you want to dispose it?";
+        currentObject = gameObject;
+        isAskingDestroying = true;
+    }
     private void SetInventoryPositions()
     {
         int count = Mathf.Min(inventoryList.Count, inventoryListPosition.Count);
@@ -62,5 +92,33 @@ public class WorkManager : MonoBehaviour
                 inventoryList[i].transform.localScale = objectScript.scale;
             }
         }
+    }
+
+    public void OnClickKeepOrDestroyObject()
+    {
+        if (isAskingKeeping)
+        {
+            AddToIventoryList(currentObject);
+            currentObject = null;
+            currentTalkingText = "";
+            talkingBar.SetActive(false);
+            buttons.SetActive(false);
+            isAskingKeeping = false;
+        }
+        else if (isAskingDestroying)
+        {
+            currentObject.GetComponent<DragObjects>().DestroySelf();
+            talkingBar.SetActive(false);
+            buttons.SetActive(false);
+            isAskingDestroying = false;
+
+        }
+    }
+
+
+    public void OnClickCancel()
+    {
+        talkingBar.SetActive(false);
+        buttons.SetActive(false);
     }
 }

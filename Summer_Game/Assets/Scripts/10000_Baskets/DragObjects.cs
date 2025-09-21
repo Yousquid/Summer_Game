@@ -57,13 +57,8 @@ public class DragObjects : MonoBehaviour
         return mainCam.ScreenToWorldPoint(mousePoint);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void DestroySelf()
     {
-       
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-       
+        Destroy(this.gameObject);
     }
 }

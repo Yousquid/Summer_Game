@@ -40,14 +40,14 @@ public class StoveChangeColor : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0) && objectInRange != null && this.tag == "BurnPlace")
         {
-            Destroy(objectInRange);
+            workManager.DestroyObjectInquiry(objectInRange);
             objectInRange = null;
             spriteRender.enabled = false;
         }
 
         if (Input.GetMouseButtonUp(0) && objectInRange != null && this.tag == "SavePlace")
         {
-            workManager.AddToIventoryList(objectInRange);
+            workManager.KeepObjectInquiry(objectInRange);
             objectInRange = null;
             spriteRender.enabled = false;
         }
@@ -57,4 +57,6 @@ public class StoveChangeColor : MonoBehaviour
             spriteRender.enabled = false;
         }
     }
+
+    
 }
