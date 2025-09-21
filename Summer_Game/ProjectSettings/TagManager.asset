@@ -12,6 +12,7 @@ TagManager:
   - Object
   - Manager
   - BeltEnd2
+  - Basket
   layers:
   - Default
   - TransparentFX

@@ -18,6 +18,8 @@ public class WorkManager : MonoBehaviour
     private GameObject currentObject;
     private bool isAskingKeeping;
     private bool isAskingDestroying;
+    private bool isAskingTakingOut;
+    private int currentInventoryListIndex;
 
 
     void Start()
@@ -59,17 +61,50 @@ public class WorkManager : MonoBehaviour
     {
         talkingBar.SetActive(true);
         buttons.SetActive(true);
-        currentTalkingText = gameObject.GetComponent<DragObjects>().description + " Do you want to keep it?";
-        currentObject = gameObject;
-        isAskingKeeping = true;
+        if (gameObject.GetComponent<DragObjects>() != null)
+        {
+            currentTalkingText = gameObject.GetComponent<DragObjects>().description + " DO YOU WANT TO KEEP IT?";
+            currentObject = gameObject;
+            isAskingKeeping = true;
+        }
+        else if (gameObject.GetComponent<DragBasket>() != null)
+        {
+            currentTalkingText = "ACCORDING TO BOP RULE 31, WORKERS SHOULD NOT KEEP ANY PRODUCTION OUTPUT, GLORY BELONGS TO BOP!";
+            buttons.SetActive(false);
+            StartCoroutine(HideUIAfterDelay(2.8f));
+        }
     }
 
+    private IEnumerator HideUIAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        talkingBar.SetActive(false);
+    }
 
+    public void InventoryTakeOutInquiry(int iventoryIndex)
+    {
+        talkingBar.SetActive(true);
+        buttons.SetActive(true);
+        
+            currentTalkingText = inventoryList[iventoryIndex].GetComponent<DragObjects>().description + " DO YOU WANT TO TAKE IT OUT?";
+            isAskingTakingOut = true;
+            currentObject = inventoryList[iventoryIndex];
+            currentInventoryListIndex = iventoryIndex;
+        
+    }
     public void DestroyObjectInquiry(GameObject gameObject)
     {
         talkingBar.SetActive(true);
         buttons.SetActive(true);
-        currentTalkingText = gameObject.GetComponent<DragObjects>().description + " Do you want to dispose it?";
+        if (gameObject.GetComponent<DragObjects>() != null)
+        {
+            currentTalkingText = gameObject.GetComponent<DragObjects>().description + " DO YOU WANT TO DISPOSE IT?";
+        }
+        else if (gameObject.GetComponent<DragBasket>() != null)
+        {
+            currentTalkingText = "DO YOU WANT TO DISPOSE THIS BASKET?";
+        }
+        
         currentObject = gameObject;
         isAskingDestroying = true;
     }
@@ -92,6 +127,8 @@ public class WorkManager : MonoBehaviour
                 inventoryList[i].transform.localScale = objectScript.scale;
             }
         }
+
+
     }
 
     public void OnClickKeepOrDestroyObject()
@@ -107,12 +144,35 @@ public class WorkManager : MonoBehaviour
         }
         else if (isAskingDestroying)
         {
-            currentObject.GetComponent<DragObjects>().DestroySelf();
+            if (currentObject.GetComponent<DragObjects>() != null)
+            {
+                currentObject.GetComponent<DragObjects>().DestroySelf();
+
+            }
+            else if (currentObject.GetComponent<DragBasket>() != null)
+            {
+                currentObject.GetComponent<DragBasket>().DestroySelf();
+
+            }
             talkingBar.SetActive(false);
             buttons.SetActive(false);
             isAskingDestroying = false;
 
         }
+        else if (isAskingTakingOut)
+        {
+            GameObject gameObject = Instantiate(currentObject,Vector3.zero,Quaternion.identity);
+            gameObject.transform.localScale = new Vector3(1, 1, 1);
+            currentObject = null;
+            Destroy(inventoryList[currentInventoryListIndex]);
+            inventoryList[currentInventoryListIndex] = null;
+            currentInventoryListIndex = 10;
+            currentTalkingText = "";
+            talkingBar.SetActive(false);
+            buttons.SetActive(false);
+            isAskingTakingOut = false;
+        }
+
     }
 
 

@@ -4,7 +4,7 @@ public class DragBasket : MonoBehaviour
 {
     private Vector3 offset;
     private Camera mainCam;
-    private bool isDragging = false;
+    public static bool isDragging = false;
 
 
     private Collider2D thisCollider;
@@ -82,5 +82,10 @@ public class DragBasket : MonoBehaviour
             PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
             collider.enabled = true;
         }
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(this.gameObject);
     }
 }

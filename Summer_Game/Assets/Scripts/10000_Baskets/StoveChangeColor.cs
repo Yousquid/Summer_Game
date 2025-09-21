@@ -5,6 +5,7 @@ public class StoveChangeColor : MonoBehaviour
     private SpriteRenderer spriteRender;
     private GameObject objectInRange;
     private WorkManager workManager;
+    private bool isLastObjectBasket = false;
     private void Start()
     {
         spriteRender = GetComponent<SpriteRenderer>();
@@ -18,12 +19,29 @@ public class StoveChangeColor : MonoBehaviour
         {
             spriteRender.enabled = true;
             objectInRange = collision.gameObject;
+            isLastObjectBasket = false;
+
+        }
+        if (collision.CompareTag("Basket") && DragBasket.isDragging)
+        {
+            spriteRender.enabled = true;
+            objectInRange = collision.gameObject;
+            isLastObjectBasket = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Object"))
+        {
+            spriteRender.enabled = false;
+
+            if (objectInRange == collision.gameObject)
+            {
+                objectInRange = null;
+            }
+        }
+        if (collision.CompareTag("Basket"))
         {
             spriteRender.enabled = false;
 
@@ -52,7 +70,11 @@ public class StoveChangeColor : MonoBehaviour
             spriteRender.enabled = false;
         }
 
-        if (!DragObjects.isDragging)
+        if (!DragObjects.isDragging && !isLastObjectBasket)
+        {
+            spriteRender.enabled = false;
+        }
+        else if (!DragBasket.isDragging && isLastObjectBasket)
         {
             spriteRender.enabled = false;
         }
