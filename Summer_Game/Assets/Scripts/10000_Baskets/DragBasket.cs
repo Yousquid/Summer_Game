@@ -14,6 +14,7 @@ public class DragBasket : MonoBehaviour
 
     public bool isDefective;
     public bool hasInnderObject;
+    private WorkManager workManager;
 
 
     void Start()
@@ -27,6 +28,8 @@ public class DragBasket : MonoBehaviour
             innerObject.SetActive(false);
 
         }
+        workManager = GameObject.FindWithTag("Manager").GetComponent<WorkManager>();
+
 
 
     }
@@ -66,9 +69,30 @@ public class DragBasket : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Light" && innerObject != null)
-        { 
+        if (collision.tag == "BasketEnd")
+        {
+            if (isDefective)
+            {
+                WorkManager.social_credit -= 5; 
+            }
+            if (hasInnderObject)
+            {
+                WorkManager.social_credit -= 5;
+            }
+            if (!isDefective && !hasInnderObject)
+            {
+                WorkManager.social_credit += 1;
+            }
+            WorkManager.currentWorkProgress += 1;
+            workManager.InstantiateBasket();
+            DestroySelf();
             
+        }
+        if (collision.tag == "Light")
+        {
+            innerObject.SetActive(true);
+            hasInnderObject = false;
+            innerObject.transform.SetParent(null, true);
         }
     }
 
@@ -79,16 +103,12 @@ public class DragBasket : MonoBehaviour
             Rigidbody2D rigidbody = this.GetComponent<Rigidbody2D>();
             rigidbody.gravityScale = 0;
             PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
-            collider.enabled = false;
-            innerObject.SetActive(true);
-            hasInnderObject = false;
-            innerObject.transform.SetParent(null, true);
+            
         }
         else if (!WorkManager.isLightOn) {
             Rigidbody2D rigidbody = this.GetComponent<Rigidbody2D>();
             rigidbody.gravityScale = 1;
             PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
-            collider.enabled = true;
         }
     }
 

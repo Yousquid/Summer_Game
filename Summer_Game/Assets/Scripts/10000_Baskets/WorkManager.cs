@@ -5,11 +5,23 @@ using UnityEngine.UI;
 using TMPro;
 public class WorkManager : MonoBehaviour
 {
-    public List<GameObject> basketList;
     public GameObject light;
     public static bool isLightOn = false;
     public List<GameObject> inventoryList;
     public List<Transform> inventoryListPosition;
+
+    private BasketsGameManager gameManager;
+
+    [System.Serializable]
+    public class Basket
+    {
+        public List<GameObject> items;
+    }
+
+    public List<Basket> basketList;
+    public Transform basketSpwanPosition;
+
+    public static int currentWorkProgress = 0;
 
     public GameObject talkingBar;
     public TextMeshProUGUI talkingText;
@@ -21,11 +33,15 @@ public class WorkManager : MonoBehaviour
     private bool isAskingTakingOut;
     private int currentInventoryListIndex;
 
+    public static int social_credit = 80;
+
 
     void Start()
     {
         buttons.SetActive(false);
         talkingBar.SetActive(false);
+        gameManager = GetComponent<BasketsGameManager>();
+        InstantiateBasket();
     }
 
     // Update is called once per frame
@@ -72,6 +88,22 @@ public class WorkManager : MonoBehaviour
 
     }
 
+    public void InstantiateBasket()
+    {
+        int dayIndex = BasketsGameManager.day - 1;
+
+        if (dayIndex >= 0 && dayIndex < basketList.Count)
+        {
+            Basket currentBasket = basketList[dayIndex];
+
+            if (currentWorkProgress >= 0 && currentWorkProgress < currentBasket.items.Count)
+            {
+                Instantiate(currentBasket.items[currentWorkProgress], basketSpwanPosition.position, Quaternion.identity);
+            }
+            
+        }
+       
+    }
     public void KeepObjectInquiry(GameObject gameObject)
     {
         talkingBar.SetActive(true);
@@ -173,7 +205,8 @@ public class WorkManager : MonoBehaviour
             else if (currentObject.GetComponent<DragBasket>() != null)
             {
                 currentObject.GetComponent<DragBasket>().DestroySelf();
-
+                currentWorkProgress += 1;
+                InstantiateBasket();
             }
             talkingBar.SetActive(false);
             buttons.SetActive(false);
