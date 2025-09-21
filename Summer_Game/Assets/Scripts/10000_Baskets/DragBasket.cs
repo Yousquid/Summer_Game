@@ -20,6 +20,7 @@ public class DragBasket : MonoBehaviour
         mainCam = Camera.main;
         thisCollider = GetComponent<Collider2D>();
         innerObject = transform.GetChild(0).gameObject;
+        innerObject.SetActive(false);
 
     }
 

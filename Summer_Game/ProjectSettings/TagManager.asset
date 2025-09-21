@@ -9,6 +9,9 @@ TagManager:
   - Light
   - BurnPlace
   - SavePlace
+  - Object
+  - Manager
+  - BeltEnd2
   layers:
   - Default
   - TransparentFX

@@ -17,6 +17,10 @@ public class MovingObject : MonoBehaviour
         {
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
+        if (isColliding && Input.GetKey(KeyCode.A) && !WorkManager.isLightOn)
+        {
+            transform.position += Vector3.left * moveSpeed * Time.deltaTime;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

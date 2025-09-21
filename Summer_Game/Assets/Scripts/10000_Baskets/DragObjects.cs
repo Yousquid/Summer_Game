@@ -4,24 +4,22 @@ public class DragObjects : MonoBehaviour
 {
     private Vector3 offset;
     private Camera mainCam;
-    private bool isDragging = false;
+    public static bool isDragging = false;
 
 
     private Collider2D thisCollider;
 
     private Rect allowedArea = new Rect(-5.7F, -2.5F, 11F, 9F);
-    private string burnTag = "BurnPlace";
-    private string saveTag = "SavePlace";
-    private GameObject burnStove;
-    private GameObject saveStove;
+
+    public string description;
+    public Vector3 scale;
 
 
     void Start()
     {
         mainCam = Camera.main;
         thisCollider = GetComponent<Collider2D>();
-        burnStove = GameObject.FindWithTag(burnTag).GetComponent<GameObject>();
-        saveStove = GameObject.FindWithTag(saveTag).GetComponent<GameObject>();
+    
 
     }
 
@@ -61,25 +59,11 @@ public class DragObjects : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == saveTag)
-        {
-            saveStove.GetComponent<SpriteRenderer>().enabled = true;
-        }
-        if (collision.tag == burnTag)
-        {
-            burnStove.GetComponent<SpriteRenderer>().enabled = true;
-        }
+       
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.tag == saveTag)
-        {
-            saveStove.GetComponent<SpriteRenderer>().enabled = false;
-        }
-        if (collision.tag == burnTag)
-        {
-            burnStove.GetComponent<SpriteRenderer>().enabled = false;
-        }
+       
     }
 }
