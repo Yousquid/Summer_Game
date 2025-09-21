@@ -52,8 +52,23 @@ public class WorkManager : MonoBehaviour
 
     private void AddToIventoryList(GameObject gameObject)
     {
-        inventoryList.Add(gameObject);
-        SetInventoryPositions(); 
+        bool added = false;
+        for (int i = 0; i < inventoryList.Count; i++)
+        {
+            if (inventoryList[i] == null)
+            {
+                inventoryList[i] = gameObject;
+                added = true;
+                break;
+            }
+        }
+
+        if (!added)
+        {
+            inventoryList.Add(gameObject);
+        }
+
+        SetInventoryPositions();
 
     }
 
@@ -118,10 +133,15 @@ public class WorkManager : MonoBehaviour
             {
                 inventoryList[i].transform.position = inventoryListPosition[i].position;
                 Rigidbody2D rb2d = inventoryList[i].GetComponent<Rigidbody2D>();
+                Collider2D collider = inventoryList[i].GetComponent<Collider2D>();
                 if (rb2d != null)
                 {
                     rb2d.simulated = false;   
                     rb2d.angularVelocity = 0f;
+                }
+                if (collider != null)
+                {
+                    collider.isTrigger = true;
                 }
                 DragObjects objectScript = inventoryList[i].GetComponent<DragObjects>();
                 inventoryList[i].transform.localScale = objectScript.scale;
@@ -130,6 +150,7 @@ public class WorkManager : MonoBehaviour
 
 
     }
+
 
     public void OnClickKeepOrDestroyObject()
     {
@@ -163,6 +184,10 @@ public class WorkManager : MonoBehaviour
         {
             GameObject gameObject = Instantiate(currentObject,Vector3.zero,Quaternion.identity);
             gameObject.transform.localScale = new Vector3(1, 1, 1);
+            Rigidbody2D rb2d = gameObject.GetComponent<Rigidbody2D>();
+            rb2d.simulated = true;
+            Collider2D collider = gameObject.GetComponent<Collider2D>();
+            collider.isTrigger = false;
             currentObject = null;
             Destroy(inventoryList[currentInventoryListIndex]);
             inventoryList[currentInventoryListIndex] = null;

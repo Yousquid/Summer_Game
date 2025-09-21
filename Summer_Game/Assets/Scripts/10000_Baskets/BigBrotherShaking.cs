@@ -18,7 +18,7 @@ public class BigBrotherShaking : MonoBehaviour
 
         if (isIncreasing)
         {
-            color.a += 0.002f;
+            color.a += 0.001f;
             if (color.a >= 1f)
             {
                 color.a = 1f;
@@ -27,7 +27,7 @@ public class BigBrotherShaking : MonoBehaviour
         }
         else
         {
-            color.a -= 0.002f;
+            color.a -= 0.001f;
             if (color.a <= 0f)
             {
                 color.a = 0f;

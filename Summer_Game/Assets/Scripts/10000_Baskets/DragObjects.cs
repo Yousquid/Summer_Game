@@ -13,6 +13,7 @@ public class DragObjects : MonoBehaviour
 
     public string description;
     public Vector3 scale;
+    public string specialObject;
 
 
     void Start()

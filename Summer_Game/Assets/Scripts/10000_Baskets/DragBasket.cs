@@ -11,16 +11,23 @@ public class DragBasket : MonoBehaviour
 
     private Rect allowedArea = new Rect(-5.7F, -2.5F, 11F, 9F);
     private GameObject innerObject;
-    
 
+    public bool isDefective;
+    public bool hasInnderObject;
 
 
     void Start()
     {
         mainCam = Camera.main;
         thisCollider = GetComponent<Collider2D>();
-        innerObject = transform.GetChild(0).gameObject;
-        innerObject.SetActive(false);
+        if (transform.childCount > 0)
+        {
+            innerObject = transform.GetChild(0).gameObject;
+            hasInnderObject = true;
+            innerObject.SetActive(false);
+
+        }
+
 
     }
 
@@ -74,6 +81,7 @@ public class DragBasket : MonoBehaviour
             PolygonCollider2D collider = this.GetComponent<PolygonCollider2D>();
             collider.enabled = false;
             innerObject.SetActive(true);
+            hasInnderObject = false;
             innerObject.transform.SetParent(null, true);
         }
         else if (!WorkManager.isLightOn) {
