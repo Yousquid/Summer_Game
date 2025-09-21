@@ -100,6 +100,10 @@ public class WorkManager : MonoBehaviour
             {
                 Instantiate(currentBasket.items[currentWorkProgress], basketSpwanPosition.position, Quaternion.identity);
             }
+            else if (currentWorkProgress == currentBasket.items.Count)
+            {
+                gameManager.GoNextGameStage();
+            }
             
         }
        

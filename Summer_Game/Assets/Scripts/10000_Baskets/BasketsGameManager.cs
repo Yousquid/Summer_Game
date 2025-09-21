@@ -13,9 +13,28 @@ public class BasketsGameManager : MonoBehaviour
         currentStage = gameStage.morningwork; 
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void GoNextGameStage()
+    {
+        if (currentStage == gameStage.morningwork)
+        {
+            currentStage = gameStage.noonbreak;
+        }
+        else if (currentStage == gameStage.noonbreak)
+        {
+            currentStage = gameStage.afternoonwork;
+        }
+        else if (currentStage == gameStage.afternoonwork)
+        {
+            currentStage = gameStage.night;
+        }
+        else if (currentStage == gameStage.night)
+        {
+            currentStage = gameStage.morningwork;
+        }
     }
 }
