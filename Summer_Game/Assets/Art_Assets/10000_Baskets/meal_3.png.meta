@@ -1,22 +1,10 @@
 fileFormatVersion: 2
-guid: 11358996970b7dd4ebafd9a9ca1caeba
+guid: 2cc10c394f03e4a45aae7ae60b2e2326
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4936365527750111209
-    second: Dining_Place_0
-  - first:
-      213: 2547259208592213693
-    second: Dining_Place_1
-  - first:
-      213: -8288637339471845124
-    second: Dining_Place_2
-  - first:
-      213: -1176171100465026708
-    second: Dining_Place_3
-  - first:
-      213: -4254939979820058598
-    second: Dining_Place_4
+      213: -1025813659176922561
+    second: meal_3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -138,101 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dining_Place_0
+      name: meal_3_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 755
-        width: 328
-        height: 291
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 71098fcd4b18e7bb0800000000000000
-      internalID: -4936365527750111209
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dining_Place_1
-      rect:
-        serializedVersion: 2
-        x: 1688
-        y: 774
-        width: 232
-        height: 272
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: db64bf611cea95320800000000000000
-      internalID: 2547259208592213693
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dining_Place_2
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 410
-        width: 438
-        height: 317
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cf8edbc3148d8fc80800000000000000
-      internalID: -8288637339471845124
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dining_Place_3
-      rect:
-        serializedVersion: 2
-        x: 1506
-        y: 409
-        width: 414
-        height: 318
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c69a3b1ad966dafe0800000000000000
-      internalID: -1176171100465026708
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dining_Place_4
-      rect:
-        serializedVersion: 2
-        x: 92
         y: 0
-        width: 1694
-        height: 407
+        width: 115
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -241,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a18b73ac1aa63f4c0800000000000000
-      internalID: -4254939979820058598
+      spriteID: f32140779e393c1f0800000000000000
+      internalID: -1025813659176922561
       vertices: []
       indices: 
       edges: []
@@ -251,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -260,12 +160,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Dining_Place_0: -4936365527750111209
-      Dining_Place_1: 2547259208592213693
-      Dining_Place_2: -8288637339471845124
-      Dining_Place_3: -1176171100465026708
-      Dining_Place_4: -4254939979820058598
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
