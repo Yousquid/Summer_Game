@@ -15,8 +15,13 @@ public class BasketsGameManager : MonoBehaviour
 
     public GameObject workScene;
     public GameObject diningScene;
+    public GameObject sleepScene;
     public GameObject telecommunicationScene;
     public GameObject uiBars;
+    public GameObject sleepButton;
+
+    public GameObject diary;
+
     private WorkManager workManager;
 
     public GameObject uiTexts;
@@ -37,6 +42,7 @@ public class BasketsGameManager : MonoBehaviour
     public static int day = 1;
     public static int peroid = 1;
     public static int textIndex = 1;
+    public static int workPeroidCount = 1;
 
     public GameObject selectionButton_one;
     public GameObject selectionButton_two;
@@ -77,8 +83,34 @@ public class BasketsGameManager : MonoBehaviour
             peroidText.text = "PEROID: NIGHT";
         }
     }
+
+    private void DestroyUnstoredObjects()
+    {
+        GameObject[] allObjects = GameObject.FindGameObjectsWithTag("Object");
+
+        foreach (GameObject obj in allObjects)
+        {
+            bool isStored = false;
+
+            foreach (GameObject storedObj in workManager.inventoryList)
+            {
+                if (storedObj == obj)
+                {
+                    isStored = true;
+                    break;
+                }
+            }
+
+            if (!isStored)
+            {
+                Destroy(obj);
+            }
+        }
+    }
     public void GoNextGameStage()
     {
+        DestroyUnstoredObjects();
+
         if (currentStage == gameStage.morningwork)
         {
             currentStage = gameStage.noonbreak;
@@ -100,17 +132,45 @@ public class BasketsGameManager : MonoBehaviour
             telecommunicationScene.SetActive(false);
             workManager.ShowAllInventoryObjects();
             uiTexts.SetActive(true);
+            isSelecting = false;
+            workPeroidCount += 1;
+            WorkManager.currentWorkProgress = 0;
             peroid += 1;
             textIndex = 1;
             isTexting = true;
+            workManager.InstantiateBasket();
         }
         else if (currentStage == gameStage.afternoonwork)
         {
             currentStage = gameStage.night;
+            workScene.SetActive(false);
+            uiBars.SetActive(true);
+            sleepScene.SetActive(true);
+            textIndex = 1;
+            peroid += 1;
+            isTexting = true;
+
+
         }
         else if (currentStage == gameStage.night)
         {
             currentStage = gameStage.morningwork;
+            isSelecting = false;
+            workScene.SetActive(true);
+            uiBars.SetActive(true);
+            diningScene.SetActive(false);
+            sleepScene.SetActive(false);
+            workManager.ShowAllInventoryObjects();
+            uiTexts.SetActive(true);
+            isSelecting = false;
+            workPeroidCount += 1;
+            WorkManager.currentWorkProgress = 0;
+            day += 1;
+            peroid = 1;
+            textIndex = 1;
+            sleepButton.SetActive(false);
+            isTexting = true;
+
         }
     }
 
@@ -211,6 +271,106 @@ public class BasketsGameManager : MonoBehaviour
         selectionButton_three.GetComponentInChildren<TextMeshProUGUI>().text = "SEND ANOTHER ONE";
         selectionButton_three.GetComponent<Button>().onClick.AddListener(CancelSelections);
 
+    }
+
+    public void ShowFirstNightSelections()
+    {
+        workManager.currentTalkingText = "What do I want to write about?";
+        selectionSituation = "night";
+        workManager.talkingBar.SetActive(true);
+        selectionButton_one.SetActive(true);
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "The FINGER & ARM I found...";
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(WriteAboutFinger);
+        selectionButton_two.SetActive(true);
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.GetComponentInChildren<TextMeshProUGUI>().text = "The BULLETS I found...";
+        selectionButton_two.GetComponent<Button>().onClick.AddListener(WriteAboutBullets);
+        selectionButton_three.SetActive(true);
+        selectionButton_three.GetComponentInChildren<TextMeshProUGUI>().text = "The NEW POLICY...";
+        selectionButton_three.GetComponent<Button>().onClick.AddListener(WriteAboutPolicy);
+    }
+
+    public void WriteAboutFinger()
+    {
+        workManager.currentTalkingText = "I found a cut finger and an arm in the baskets today. This is insane, I really want to know what happened. The arm seems very familiar to me, but I cannot remember whom it belongs to, we cannot make friends, sorry.";
+        selectionButton_two.SetActive(false);
+        selectionButton_three.SetActive(false);
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "Finish";
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(FinishFinger);
+
+    }
+
+    public void WriteAboutBullets()
+    {
+        workManager.currentTalkingText = "I found a bar of bullets in the basket today. I might need them one day. But how could it get inside of the basket? Am I acutually working for the Ministry of Peace?";
+        selectionButton_two.SetActive(false);
+        selectionButton_three.SetActive(false);
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "Finish";
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(FinishBullet);
+    }
+
+    public void WriteAboutPolicy()
+    {
+        workManager.currentTalkingText = "The new policy in the factory adds more working hours for every worker. Now I have to work 12 hours a day, I think I might need to use my social credit to exchange for some focusing water to handle these works.";
+        selectionButton_two.SetActive(false);
+        selectionButton_three.SetActive(false);
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "Finish";
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(FinishPolicy);
+    }
+
+
+    public void FinishFinger()
+    {
+        GameObject spwaned_diary = Instantiate(diary, new Vector3(0, 0, 0), Quaternion.identity);
+        spwaned_diary.GetComponent<DragObjects>().description = "THE DIARY ABOUT THE FINGER AND ARM I FOUND";
+        workManager.currentTalkingText = "I can carry the diary I wrote to the factory. I really want to find someone to discuss about this. But I should be careful, I must find one I trust, and give this piece of paper to that one without letting BOP know.";
+        isSelecting = true;
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.SetActive(false);
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+        workManager.yesButton.SetActive(true);
+    }
+
+    public void FinishBullet()
+    {
+        GameObject spwaned_diary = Instantiate(diary, new Vector3(0, 0, 0), Quaternion.identity);
+        spwaned_diary.GetComponent<DragObjects>().description = "THE DIARY ABOUT THE BULLETS I FOUND";
+        workManager.currentTalkingText = "I can carry the diary I wrote to the factory. I really want to find someone to discuss about this. But I should be careful, I must find one I trust, and give this piece of paper to that one without letting BOP know.";
+        isSelecting = true;
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.SetActive(false);
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+        workManager.yesButton.SetActive(true);
+    }
+
+    public void FinishPolicy()
+    {
+        GameObject spwaned_diary = Instantiate(diary, new Vector3(0, 0, 0), Quaternion.identity);
+        spwaned_diary.GetComponent<DragObjects>().description = "THE DIARY ABOUT THE POLICY";
+        workManager.currentTalkingText = "I can carry the diary I wrote to the factory. I really want to find someone to discuss about this. But I should be careful, I must find one I trust, and give this piece of paper to that one without letting BOP know.";
+        isSelecting = true;
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.SetActive(false);
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+        workManager.yesButton.SetActive(true);
+    }
+   
+    public void ShowSecondNightSelections()
+    { 
+        
     }
 
 }

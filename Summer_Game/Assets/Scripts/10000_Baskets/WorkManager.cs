@@ -115,7 +115,7 @@ public class WorkManager : MonoBehaviour
 
     public void InstantiateBasket()
     {
-        int dayIndex = BasketsGameManager.day - 1;
+        int dayIndex = BasketsGameManager.workPeroidCount - 1;
 
         if (dayIndex >= 0 && dayIndex < basketList.Count)
         {
@@ -291,6 +291,15 @@ public class WorkManager : MonoBehaviour
         yesButton.SetActive(false);
         talkingBar.SetActive(false);
         BasketsGameManager.isTexting = false;
+
+        if (BasketsGameManager.peroid == 4 && BasketsGameManager.day == 1)
+        {
+            gameManager.ShowFirstNightSelections();
+        }
+        if (BasketsGameManager.peroid == 4 && BasketsGameManager.day == 2)
+        {
+            gameManager.ShowSecondNightSelections();
+        }
     }
 
     public void OnClickContinueText()
@@ -310,6 +319,8 @@ public class WorkManager : MonoBehaviour
                     InstantiateBasket();
                     //currentWorkProgress += 1;
                 }
+                
+
             }
         }
 
@@ -318,6 +329,13 @@ public class WorkManager : MonoBehaviour
             talkingBar.SetActive(false);
             noButton.SetActive(false);
             yesButton.SetActive(false);
+        }
+        if (BasketsGameManager.isSelecting && BasketsGameManager.peroid == 4)
+        {
+            talkingBar.SetActive(false);
+            noButton.SetActive(false);
+            yesButton.SetActive(false);
+            gameManager.sleepButton.SetActive(true);
         }
 
     }

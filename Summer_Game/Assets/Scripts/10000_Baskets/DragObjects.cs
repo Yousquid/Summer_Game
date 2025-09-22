@@ -38,8 +38,12 @@ public class DragObjects : MonoBehaviour
             Vector3 mousePos = GetMouseWorldPos();
             Vector3 newPos = mousePos + offset;
 
-            newPos.x = Mathf.Clamp(newPos.x, allowedArea.xMin, allowedArea.xMax);
-            newPos.y = Mathf.Clamp(newPos.y, allowedArea.yMin, allowedArea.yMax);
+            if (BasketsGameManager.peroid != 4)
+            {
+                newPos.x = Mathf.Clamp(newPos.x, allowedArea.xMin, allowedArea.xMax);
+                newPos.y = Mathf.Clamp(newPos.y, allowedArea.yMin, allowedArea.yMax);
+            }
+            
 
             transform.position = newPos;
         }
