@@ -16,7 +16,10 @@ public class MealEat : MonoBehaviour
     {
         if (collision.tag == "BasketEnd")
         {
-            
+            if (leftEatTimes <= 1)
+            { 
+                //GO TO NEXT STAGE
+            }
         }
         if (collision.tag == "Light")
         {

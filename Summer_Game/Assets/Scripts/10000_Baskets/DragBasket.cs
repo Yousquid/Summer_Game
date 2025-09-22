@@ -82,9 +82,11 @@ public class DragBasket : MonoBehaviour
             if (!isDefective && !hasInnderObject)
             {
                 WorkManager.social_credit += 1;
+                WorkManager.work_finished_number += 1;
             }
             WorkManager.currentWorkProgress += 1;
             workManager.InstantiateBasket();
+            print("1");
             DestroySelf();
             
         }

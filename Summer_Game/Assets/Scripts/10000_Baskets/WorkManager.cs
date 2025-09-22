@@ -21,6 +21,9 @@ public class WorkManager : MonoBehaviour
     public List<Basket> basketList;
     public Transform basketSpwanPosition;
 
+    public GameObject noButton;
+    public GameObject yesButton;
+
     public static int currentWorkProgress = 0;
 
     public GameObject talkingBar;
@@ -34,14 +37,20 @@ public class WorkManager : MonoBehaviour
     private int currentInventoryListIndex;
 
     public static int social_credit = 80;
+    public TextMeshProUGUI social_credit_text;
+    public TextMeshProUGUI work_number_text;
+    public TextMeshProUGUI date_text;
+
+
+    public static int work_finished_number = 0;
+
 
 
     void Start()
     {
-        buttons.SetActive(false);
-        talkingBar.SetActive(false);
+        yesButton.SetActive(true);
+        noButton.SetActive(false);
         gameManager = GetComponent<BasketsGameManager>();
-        InstantiateBasket();
     }
 
     // Update is called once per frame
@@ -49,6 +58,10 @@ public class WorkManager : MonoBehaviour
     {
         LightControl();
         talkingText.text = currentTalkingText;
+        TextMode();
+        social_credit_text.text = $"SOCIAL CREDIT: {social_credit}";
+        work_number_text.text = $"{10000 - work_finished_number * 1000}";
+        date_text.text = $"1984.09.{21 + BasketsGameManager.day}";
     }
 
     void LightControl()
@@ -111,7 +124,8 @@ public class WorkManager : MonoBehaviour
     public void KeepObjectInquiry(GameObject gameObject)
     {
         talkingBar.SetActive(true);
-        buttons.SetActive(true);
+        yesButton.SetActive(true);
+        noButton.SetActive(true);
         if (gameObject.GetComponent<DragObjects>() != null)
         {
             currentTalkingText = gameObject.GetComponent<DragObjects>().description + " DO YOU WANT TO KEEP IT?";
@@ -135,9 +149,9 @@ public class WorkManager : MonoBehaviour
     public void InventoryTakeOutInquiry(int iventoryIndex)
     {
         talkingBar.SetActive(true);
-        buttons.SetActive(true);
-        
-            currentTalkingText = inventoryList[iventoryIndex].GetComponent<DragObjects>().description + " DO YOU WANT TO TAKE IT OUT?";
+        yesButton.SetActive(true);
+        noButton.SetActive(true);
+        currentTalkingText = inventoryList[iventoryIndex].GetComponent<DragObjects>().description + " DO YOU WANT TO TAKE IT OUT?";
             isAskingTakingOut = true;
             currentObject = inventoryList[iventoryIndex];
             currentInventoryListIndex = iventoryIndex;
@@ -146,7 +160,8 @@ public class WorkManager : MonoBehaviour
     public void DestroyObjectInquiry(GameObject gameObject)
     {
         talkingBar.SetActive(true);
-        buttons.SetActive(true);
+        yesButton.SetActive(true);
+        noButton.SetActive(true);
         if (gameObject.GetComponent<DragObjects>() != null)
         {
             currentTalkingText = gameObject.GetComponent<DragObjects>().description + " DO YOU WANT TO DISPOSE IT?";
@@ -190,49 +205,97 @@ public class WorkManager : MonoBehaviour
 
     public void OnClickKeepOrDestroyObject()
     {
-        if (isAskingKeeping)
+        if (!BasketsGameManager.isTexting)
         {
-            AddToIventoryList(currentObject);
-            currentObject = null;
-            currentTalkingText = "";
-            talkingBar.SetActive(false);
-            buttons.SetActive(false);
-            isAskingKeeping = false;
-        }
-        else if (isAskingDestroying)
-        {
-            if (currentObject.GetComponent<DragObjects>() != null)
+            if (isAskingKeeping)
             {
-                currentObject.GetComponent<DragObjects>().DestroySelf();
+                AddToIventoryList(currentObject);
+                currentObject = null;
+                currentTalkingText = "";
+                talkingBar.SetActive(false);
+                yesButton.SetActive(false);
+                noButton.SetActive(false);
+                isAskingKeeping = false;
+            }
+            else if (isAskingDestroying)
+            {
+                if (currentObject.GetComponent<DragObjects>() != null)
+                {
+                    currentObject.GetComponent<DragObjects>().DestroySelf();
+
+                }
+                else if (currentObject.GetComponent<DragBasket>() != null)
+                {
+                    currentObject.GetComponent<DragBasket>().DestroySelf();
+                    currentWorkProgress += 1;
+                    InstantiateBasket();
+                    print("2");
+
+                }
+                talkingBar.SetActive(false);
+                yesButton.SetActive(false);
+                noButton.SetActive(false);
+                isAskingDestroying = false;
 
             }
-            else if (currentObject.GetComponent<DragBasket>() != null)
+            else if (isAskingTakingOut)
             {
-                currentObject.GetComponent<DragBasket>().DestroySelf();
-                currentWorkProgress += 1;
+                GameObject gameObject = Instantiate(currentObject, Vector3.zero, Quaternion.identity);
+                gameObject.transform.localScale = new Vector3(1, 1, 1);
+                Rigidbody2D rb2d = gameObject.GetComponent<Rigidbody2D>();
+                rb2d.simulated = true;
+                Collider2D collider = gameObject.GetComponent<Collider2D>();
+                collider.isTrigger = false;
+                currentObject = null;
+                Destroy(inventoryList[currentInventoryListIndex]);
+                inventoryList[currentInventoryListIndex] = null;
+                currentInventoryListIndex = 10;
+                currentTalkingText = "";
+                talkingBar.SetActive(false);
+                yesButton.SetActive(false);
+                noButton.SetActive(false);
+                isAskingTakingOut = false;
+            }
+        }
+    }
+
+    public void TextMode()
+    {
+        if (BasketsGameManager.isTexting)
+        {
+            noButton.SetActive(false);
+            yesButton.SetActive(true);
+            talkingBar.SetActive(true);
+            currentTalkingText = gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts[BasketsGameManager.textIndex-1];
+
+        }
+    }
+
+    private void CloseTextMode()
+    {
+        noButton.SetActive(false);
+        yesButton.SetActive(false);
+        talkingBar.SetActive(false);
+        BasketsGameManager.isTexting = false;
+    }
+
+    public void OnClickContinueText()
+    {
+
+        if (BasketsGameManager.isTexting && BasketsGameManager.textIndex < gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
+        {
+            BasketsGameManager.textIndex += 1;
+        }
+        else if (BasketsGameManager.textIndex == gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
+        {
+            CloseTextMode();
+
+            if (BasketsGameManager.peroid == 1 && currentWorkProgress == 0)
+            {
                 InstantiateBasket();
-            }
-            talkingBar.SetActive(false);
-            buttons.SetActive(false);
-            isAskingDestroying = false;
+                print("3");
 
-        }
-        else if (isAskingTakingOut)
-        {
-            GameObject gameObject = Instantiate(currentObject,Vector3.zero,Quaternion.identity);
-            gameObject.transform.localScale = new Vector3(1, 1, 1);
-            Rigidbody2D rb2d = gameObject.GetComponent<Rigidbody2D>();
-            rb2d.simulated = true;
-            Collider2D collider = gameObject.GetComponent<Collider2D>();
-            collider.isTrigger = false;
-            currentObject = null;
-            Destroy(inventoryList[currentInventoryListIndex]);
-            inventoryList[currentInventoryListIndex] = null;
-            currentInventoryListIndex = 10;
-            currentTalkingText = "";
-            talkingBar.SetActive(false);
-            buttons.SetActive(false);
-            isAskingTakingOut = false;
+            }
         }
 
     }
@@ -241,6 +304,7 @@ public class WorkManager : MonoBehaviour
     public void OnClickCancel()
     {
         talkingBar.SetActive(false);
-        buttons.SetActive(false);
+        noButton.SetActive(false);
+        yesButton.SetActive(true);
     }
 }

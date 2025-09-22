@@ -10,24 +10,57 @@ public class BasketsGameManager : MonoBehaviour
 
     public gameStage currentStage;
 
+    public static bool isTexting = false;
+
+    [System.Serializable]
+    public class TextGroup
+    {
+        public List<Texts> textsList; 
+    }
+
     [System.Serializable]
     public class Texts
     {
         public List<string> texts;
     }
 
-    public List<Texts> textsList;
+    public List<TextGroup> allTexts;
     public static int day = 1;
+    public static int peroid = 1;
+    public static int textIndex = 1;
+
+    public TextMeshProUGUI peroidText;
+
     void Start()
     {
-        currentStage = gameStage.morningwork; 
+        currentStage = gameStage.morningwork;
+        isTexting = true;
     }
 
     void Update()
     {
-        
+        UpdatePeroid();
     }
 
+    void UpdatePeroid()
+    {
+        if (peroid == 1)
+        {
+            peroidText.text = "PEROID: MORNING";
+        }
+        else if (peroid == 2)
+        {
+            peroidText.text = "PEROID: NOON";
+        }
+        else if (peroid == 3)
+        {
+            peroidText.text = "PEROID: AFTERNOON";
+        }
+        else if (peroid == 4)
+        {
+            peroidText.text = "PEROID: NIGHT";
+        }
+    }
     public void GoNextGameStage()
     {
         if (currentStage == gameStage.morningwork)
@@ -47,4 +80,6 @@ public class BasketsGameManager : MonoBehaviour
             currentStage = gameStage.morningwork;
         }
     }
+
+   
 }
