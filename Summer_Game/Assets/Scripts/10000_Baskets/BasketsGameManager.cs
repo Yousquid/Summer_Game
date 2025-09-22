@@ -12,6 +12,14 @@ public class BasketsGameManager : MonoBehaviour
 
     public static bool isTexting = false;
 
+    public GameObject workScene;
+    public GameObject diningScene;
+    public GameObject telecommunicationScene;
+    public GameObject uiBars;
+    private WorkManager workManager;
+
+    public GameObject uiTexts;
+
     [System.Serializable]
     public class TextGroup
     {
@@ -29,12 +37,19 @@ public class BasketsGameManager : MonoBehaviour
     public static int peroid = 1;
     public static int textIndex = 1;
 
+    public GameObject selectionButton_one;
+    public GameObject selectionButton_two;
+    public GameObject selectionButton_three;
+
+    public static string selectionSituation;
+
     public TextMeshProUGUI peroidText;
 
     void Start()
     {
         currentStage = gameStage.morningwork;
         isTexting = true;
+        workManager = GetComponent<WorkManager>();
     }
 
     void Update()
@@ -66,6 +81,14 @@ public class BasketsGameManager : MonoBehaviour
         if (currentStage == gameStage.morningwork)
         {
             currentStage = gameStage.noonbreak;
+            workScene.SetActive(false);
+            uiBars.SetActive(false);
+            diningScene.SetActive(true);
+            workManager.HideAllInventoryObjects();
+            uiTexts.SetActive(false);
+            peroid += 1;
+            textIndex = 1;
+            isTexting = true;
         }
         else if (currentStage == gameStage.noonbreak)
         {
@@ -81,5 +104,30 @@ public class BasketsGameManager : MonoBehaviour
         }
     }
 
-   
+    public void NoonChoice()
+    {
+        selectionButton_one.SetActive(true);
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "T-CENTER";
+        //selectionButton_two.SetActive(true);
+        selectionButton_three.SetActive(true);
+        selectionButton_three.GetComponentInChildren<TextMeshProUGUI>().text = "???";
+
+        
+        workManager.talkingBar.SetActive(true);
+        workManager.currentTalkingText = "FIVE LEFT MINUTES FOR ME, SHOULD I GO TO THE TELECOMMUNICATION CENTER OR MEET SOMEONE?";
+        selectionSituation = "noon";
+
+    }
+
+    public void OnClickSelect()
+    {
+        if (selectionSituation == "noon")
+        {
+            diningScene.SetActive(false);
+            workManager.ShowAllInventoryObjects();
+            telecommunicationScene.SetActive(true);
+        }
+        
+    }
+
 }

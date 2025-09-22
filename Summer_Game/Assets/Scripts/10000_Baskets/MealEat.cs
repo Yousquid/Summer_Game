@@ -7,18 +7,23 @@ public class MealEat : MonoBehaviour
     private SpriteRenderer sprite;
     private bool canEat = false;
     private int leftEatTimes = 3;
+    private BasketsGameManager gameManager;
 
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
+        gameManager = GameObject.FindWithTag("Manager").GetComponent<BasketsGameManager>();
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "BasketEnd")
         {
             if (leftEatTimes <= 1)
-            { 
+            {
                 //GO TO NEXT STAGE
+                //gameManager.GoNextGameStage();
+                gameManager.NoonChoice();
             }
         }
         if (collision.tag == "Light")

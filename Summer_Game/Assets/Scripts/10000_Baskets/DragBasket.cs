@@ -86,15 +86,18 @@ public class DragBasket : MonoBehaviour
             }
             WorkManager.currentWorkProgress += 1;
             workManager.InstantiateBasket();
-            print("1");
             DestroySelf();
             
         }
         if (collision.tag == "Light")
         {
-            innerObject.SetActive(true);
-            hasInnderObject = false;
-            innerObject.transform.SetParent(null, true);
+            if (hasInnderObject)
+            {
+                innerObject.SetActive(true);
+                hasInnderObject = false;
+                innerObject.transform.SetParent(null, true);
+            }
+           
         }
     }
 

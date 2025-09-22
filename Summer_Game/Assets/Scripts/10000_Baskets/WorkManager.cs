@@ -6,6 +6,7 @@ using TMPro;
 public class WorkManager : MonoBehaviour
 {
     public GameObject light;
+    public GameObject eatingLight;
     public static bool isLightOn = false;
     public List<GameObject> inventoryList;
     public List<Transform> inventoryListPosition;
@@ -28,7 +29,7 @@ public class WorkManager : MonoBehaviour
 
     public GameObject talkingBar;
     public TextMeshProUGUI talkingText;
-    private string currentTalkingText;
+    public string currentTalkingText;
     public GameObject buttons;
     private GameObject currentObject;
     private bool isAskingKeeping;
@@ -67,13 +68,24 @@ public class WorkManager : MonoBehaviour
     void LightControl()
     {
         if (Input.GetKeyDown(KeyCode.S) && !isLightOn)
-        { 
-            light.SetActive(true);
-            isLightOn = true;
+        {
+            if (BasketsGameManager.peroid == 1 || BasketsGameManager.peroid == 3 || BasketsGameManager.peroid == 4)
+            {
+                light.SetActive(true);
+                isLightOn = true;
+            }
+            else if (BasketsGameManager.peroid == 2)
+            {
+                eatingLight.SetActive(true);
+                isLightOn = true;
+            }
+
+
         }
         if (Input.GetKeyDown(KeyCode.W) && isLightOn)
         {
             light.SetActive(false);
+            eatingLight.SetActive(false);
             isLightOn = false;
         }
 
@@ -135,7 +147,8 @@ public class WorkManager : MonoBehaviour
         else if (gameObject.GetComponent<DragBasket>() != null)
         {
             currentTalkingText = "ACCORDING TO BOP RULE 31, WORKERS SHOULD NOT KEEP ANY PRODUCTION OUTPUT, GLORY BELONGS TO BOP!";
-            buttons.SetActive(false);
+            yesButton.SetActive(false);
+            noButton.SetActive(false);
             StartCoroutine(HideUIAfterDelay(2.8f));
         }
     }
@@ -228,8 +241,8 @@ public class WorkManager : MonoBehaviour
                 {
                     currentObject.GetComponent<DragBasket>().DestroySelf();
                     currentWorkProgress += 1;
+                    work_finished_number += 1;
                     InstantiateBasket();
-                    print("2");
 
                 }
                 talkingBar.SetActive(false);
@@ -281,30 +294,54 @@ public class WorkManager : MonoBehaviour
 
     public void OnClickContinueText()
     {
-
-        if (BasketsGameManager.isTexting && BasketsGameManager.textIndex < gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
+        if (BasketsGameManager.isTexting)
         {
-            BasketsGameManager.textIndex += 1;
-        }
-        else if (BasketsGameManager.textIndex == gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
-        {
-            CloseTextMode();
-
-            if (BasketsGameManager.peroid == 1 && currentWorkProgress == 0)
+            if (BasketsGameManager.isTexting && BasketsGameManager.textIndex < gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
             {
-                InstantiateBasket();
-                print("3");
+                BasketsGameManager.textIndex += 1;
+            }
+            else if (BasketsGameManager.textIndex == gameManager.allTexts[BasketsGameManager.day - 1].textsList[BasketsGameManager.peroid - 1].texts.Count)
+            {
+                CloseTextMode();
 
+                if (BasketsGameManager.peroid == 1 && currentWorkProgress == 0)
+                {
+                    InstantiateBasket();
+                    currentWorkProgress += 1;
+                }
             }
         }
 
+        
+
     }
 
+    public void HideAllInventoryObjects()
+    {
+        foreach (var obj in inventoryList)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(false);
+            }
+        }
+    }
+
+    public void ShowAllInventoryObjects()
+    {
+        foreach (var obj in inventoryList)
+        {
+            if (obj != null)
+            {
+                obj.SetActive(true);
+            }
+        }
+    }
 
     public void OnClickCancel()
     {
         talkingBar.SetActive(false);
         noButton.SetActive(false);
-        yesButton.SetActive(true);
+        yesButton.SetActive(false);
     }
 }
