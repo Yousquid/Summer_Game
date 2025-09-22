@@ -6,6 +6,7 @@ using TMPro;
 
 public class MicrophoneDetection : MonoBehaviour
 {
+    
     private float lowVolume = 0.08f;
     private float lowVolumeOffset = 0.05f;
 

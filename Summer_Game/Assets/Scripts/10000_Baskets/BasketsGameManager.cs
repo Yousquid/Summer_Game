@@ -165,6 +165,7 @@ public class BasketsGameManager : MonoBehaviour
             isSelecting = false;
             workPeroidCount += 1;
             WorkManager.currentWorkProgress = 0;
+            WorkManager.work_finished_number = 0;
             day += 1;
             peroid = 1;
             textIndex = 1;

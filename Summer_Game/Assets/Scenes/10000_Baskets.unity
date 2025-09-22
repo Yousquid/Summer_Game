@@ -1814,7 +1814,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 6861894420282137670, guid: c795f4e72dec3244f86c8347c6a7cb9f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2769,6 +2769,18 @@ MonoBehaviour:
     - {fileID: 5249846222121775061, guid: 58ef99dc174dd9c42b17ffd55f142f2f, type: 3}
     - {fileID: 5249846222121775061, guid: 2322a6cb3c3ee7a4c90dbe559cabf74e, type: 3}
     - {fileID: 5249846222121775061, guid: d098c9a7e88f78b4c94ecc0bfe645425, type: 3}
+  - items:
+    - {fileID: 5249846222121775061, guid: c5cc649fb8bc93e46a7f1556c6fdc571, type: 3}
+    - {fileID: 5249846222121775061, guid: dc8f3d28e62819248b19da756eab178b, type: 3}
+    - {fileID: 5249846222121775061, guid: f19572262b1bdfc42835b2923ed19106, type: 3}
+    - {fileID: 5249846222121775061, guid: 073f312ffe4a028468689c5646193621, type: 3}
+    - {fileID: 5249846222121775061, guid: 8f38a7d603c168640ad8fdcc7806f2a4, type: 3}
+  - items:
+    - {fileID: 5249846222121775061, guid: 11e21befe9bfe06439b4ce8328b0b591, type: 3}
+    - {fileID: 5249846222121775061, guid: 1523ccbe2af088347b4287970022b41f, type: 3}
+    - {fileID: 5249846222121775061, guid: f089cb2ae3e02b34280ce11099ede536, type: 3}
+    - {fileID: 5249846222121775061, guid: 3aabadeebe0a6a749bab492f3dc64003, type: 3}
+    - {fileID: 5249846222121775061, guid: 5d2d0eaaaa4abf445b800a2c05da1cc8, type: 3}
   basketSpwanPosition: {fileID: 232539704}
   noButton: {fileID: 1010900660}
   yesButton: {fileID: 186035779}
@@ -2823,6 +2835,27 @@ MonoBehaviour:
       - 'TO USE THE NEWLY IMPLEMENTED DINING SYSTEM, PRESS "D" TO PASS THE MEAL,
         PRESS "S" TO EAT. REMEMBER: YOU ALL SHOULD EAT IN THE LIGHT. GLORY TO THE
         NOON BREAK & BOP!'
+    - texts:
+      - GOOD AFTERNOON WORKERS! REMEMBER, BE EFFICIENT, WE DONT LIKE INEFFICIENT
+        WORKERS, AND DISPOSE THE DEFECTIVE BASKETS. GLORY BELONGS TO BOP!
+    - texts:
+      - This night is different for me. For some reason, I cannot sleep until I realize
+        that I have encountered something. I want to write something down, to write
+        a diary. I want to leave something for anyone to know my existence once in
+        this        world.
+      - I guess I am starting to fear, fear the world, and fear myself. I do not
+        want to be identified as a defective "basket" one day, not because I want
+        to be useful to BOP, but because I do not want to die for BOP. What should
+        I write about?
+  - textsList:
+    - texts:
+      - GOOD MORNING WORKERS. RECENTLY, THE FILTERING SYSTEM IN THE FACTORY IS REPAIRING,
+        SO YOU MIGHT FIND WEIRD THINGS IN YOUR BASKETS. BUT IT WILL NOT AFFECT OUR
+        PRODUCTION, JUST REMEMBER TO DESPOSE DEFECTIVE BASKETS AND USELESS OBJECTS.
+    - texts:
+      - 'During the meal time, when I look up, I notice a female worker looking at
+        me. She quickly looks at another place when our eyes met. Without doubt,
+        she was watching me. I might find a chance to speak to her some day. '
     - texts:
       - GOOD AFTERNOON WORKERS! REMEMBER, BE EFFICIENT, WE DONT LIKE INEFFICIENT
         WORKERS, AND DISPOSE THE DEFECTIVE BASKETS. GLORY BELONGS TO BOP!
@@ -9709,9 +9742,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1728421487}
   - {fileID: 1419429700}
   - {fileID: 186035780}
-  - {fileID: 1728421487}
   - {fileID: 1010900661}
   - {fileID: 1756927978}
   - {fileID: 183571104}
