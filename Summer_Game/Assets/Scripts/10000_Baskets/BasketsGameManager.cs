@@ -11,6 +11,7 @@ public class BasketsGameManager : MonoBehaviour
     public gameStage currentStage;
 
     public static bool isTexting = false;
+    public static bool isSelecting = false;
 
     public GameObject workScene;
     public GameObject diningScene;
@@ -69,7 +70,7 @@ public class BasketsGameManager : MonoBehaviour
         }
         else if (peroid == 3)
         {
-            peroidText.text = "PEROID: AFTERNOON";
+            peroidText.text = "PEROID: NOON";
         }
         else if (peroid == 4)
         {
@@ -93,6 +94,15 @@ public class BasketsGameManager : MonoBehaviour
         else if (currentStage == gameStage.noonbreak)
         {
             currentStage = gameStage.afternoonwork;
+            workScene.SetActive(true);
+            uiBars.SetActive(true);
+            diningScene.SetActive(false);
+            telecommunicationScene.SetActive(false);
+            workManager.ShowAllInventoryObjects();
+            uiTexts.SetActive(true);
+            peroid += 1;
+            textIndex = 1;
+            isTexting = true;
         }
         else if (currentStage == gameStage.afternoonwork)
         {
@@ -108,26 +118,99 @@ public class BasketsGameManager : MonoBehaviour
     {
         selectionButton_one.SetActive(true);
         selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "T-CENTER";
-        //selectionButton_two.SetActive(true);
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(OnClickSelectGoToTCenter);
+        selectionButton_two.SetActive(true);
+        selectionButton_two.GetComponentInChildren<TextMeshProUGUI>().text = "???";
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
         selectionButton_three.SetActive(true);
         selectionButton_three.GetComponentInChildren<TextMeshProUGUI>().text = "???";
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
 
-        
+
+
         workManager.talkingBar.SetActive(true);
         workManager.currentTalkingText = "FIVE LEFT MINUTES FOR ME, SHOULD I GO TO THE TELECOMMUNICATION CENTER OR MEET SOMEONE?";
         selectionSituation = "noon";
 
     }
 
-    public void OnClickSelect()
+    public void OnClickSelectGoToTCenter()
     {
         if (selectionSituation == "noon")
         {
+            selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+            selectionButton_one.SetActive(false);
+            selectionButton_two.SetActive(false);
+            selectionButton_three.SetActive(false);
+            uiBars.SetActive(true);
             diningScene.SetActive(false);
             workManager.ShowAllInventoryObjects();
             telecommunicationScene.SetActive(true);
+            workManager.currentTalkingText = "WORKER 8940, WHAT OBJECT DO YOU WANT TO TELECOMMUNICATE? CLICK THE OBJECT IN YOUR INVENTORY TO TAKE IT OUT, AND THEN DRAG YOUR OBJECT TO MY HAND.";
+            workManager.talkingBar.SetActive(true);
+            workManager.yesButton.SetActive(true);
+            
+            isSelecting = true;
         }
-        
+
+    }
+
+    public void OnClickSelectMOfLove()
+    {
+        workManager.currentTalkingText =
+            "THANK YOU FOR YOUR CONTRIBUTION TO THE CONSTRUCTION OF LOVE. YOU MAY GET YOUR REPLY IF THE OBJECT YOU SENT DOES MATTER FOR BOP, YOU MIGHT EVEN GET A PROMOTION. GLORY BELONGS TO BOP!";
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(GoNextGameStage);
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "GO BACK TO WORK";
+
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+    }
+
+    public void OnClickSelectMOfTruth()
+    {
+        workManager.currentTalkingText =
+            "THANK YOU FOR YOUR CONTRIBUTION TO THE CONSTRUCTION OF TRUTH. YOU MAY GET YOUR REPLY IF THE OBJECT YOU SENT DOES MATTER FOR BOP, YOU MIGHT EVEN GET A PROMOTION. GLORY BELONGS TO BOP!";
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(GoNextGameStage);
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "GO BACK TO WORK";
+
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+        workManager.yesButton.SetActive(true);
+    }
+
+    public void CancelSelections()
+    {
+        selectionButton_one.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_one.SetActive(false);
+        selectionButton_two.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_two.SetActive(false);
+        selectionButton_three.GetComponent<Button>().onClick.RemoveAllListeners();
+        selectionButton_three.SetActive(false);
+        workManager.talkingBar.SetActive(false);
+
+    }
+    public void ShowTCommunicationSelections()
+    {
+        workManager.currentTalkingText = 
+       "WHERE DO YOU WANT TO SEND TO? ACCORDING TO BOP RULE 4, PEOPLE ARE REQUIRED TO BE HONEST AND RESPONSIBLE. REPORT YOUR SUSPICIOUS COLEAGUES TO THE MINISTRY OF LOVE, REPORT HISTORY AND CULTURE RELATED AFFAIRS TO THE MINISTRY OF TRUTH. GLORY BELOGNS TO BOP!";
+        workManager.talkingBar.SetActive(true);
+        selectionButton_one.SetActive(true);
+        selectionButton_one.GetComponentInChildren<TextMeshProUGUI>().text = "MINISTRY OF LOVE";
+        selectionButton_one.GetComponent<Button>().onClick.AddListener(OnClickSelectMOfLove);
+        selectionButton_two.SetActive(true);
+        selectionButton_two.GetComponentInChildren<TextMeshProUGUI>().text = "MINISTRY OF TRUTH";
+        selectionButton_two.GetComponent<Button>().onClick.AddListener(OnClickSelectMOfTruth);
+        selectionButton_three.SetActive(true);
+        selectionButton_three.GetComponentInChildren<TextMeshProUGUI>().text = "SEND ANOTHER ONE";
+        selectionButton_three.GetComponent<Button>().onClick.AddListener(CancelSelections);
+
     }
 
 }

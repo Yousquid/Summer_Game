@@ -292,6 +292,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: work_id
       objectReference: {fileID: 0}
+    - target: {fileID: 3932589374703599092, guid: 5c1479a298dc01d45afebaea17ef9fe6, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4242119673569325468, guid: 5c1479a298dc01d45afebaea17ef9fe6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.048

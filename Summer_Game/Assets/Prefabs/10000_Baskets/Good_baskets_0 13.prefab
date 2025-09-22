@@ -266,6 +266,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: threads
       objectReference: {fileID: 0}
+    - target: {fileID: 3932589374703599092, guid: fad7842633f134d4b9989c13145f6512, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4242119673569325468, guid: fad7842633f134d4b9989c13145f6512, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.059

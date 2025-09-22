@@ -284,6 +284,7 @@ public class WorkManager : MonoBehaviour
         }
     }
 
+
     private void CloseTextMode()
     {
         noButton.SetActive(false);
@@ -307,12 +308,17 @@ public class WorkManager : MonoBehaviour
                 if (BasketsGameManager.peroid == 1 && currentWorkProgress == 0)
                 {
                     InstantiateBasket();
-                    currentWorkProgress += 1;
+                    //currentWorkProgress += 1;
                 }
             }
         }
 
-        
+        if (BasketsGameManager.isSelecting)
+        {
+            talkingBar.SetActive(false);
+            noButton.SetActive(false);
+            yesButton.SetActive(false);
+        }
 
     }
 

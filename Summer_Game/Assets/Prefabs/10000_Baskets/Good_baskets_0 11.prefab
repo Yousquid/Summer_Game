@@ -298,6 +298,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: rag
       objectReference: {fileID: 0}
+    - target: {fileID: 3932589374703599092, guid: c46b8782bcf2af645b71630f21133b44, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4242119673569325468, guid: c46b8782bcf2af645b71630f21133b44, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.047
