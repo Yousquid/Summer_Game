@@ -69,7 +69,6 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     {
         UpdatePlayerDice();
         DiceCompare();
-        StartPunch();
     }
 
     public void RollP1Dice()
@@ -101,7 +100,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     buttonText.text = "OK";
                     isPlayerOnePunching = true;
                     confirmButton.onClick.RemoveAllListeners();
-                    confirmButton.onClick.AddListener(OnClickChangePunchStage);
+                    confirmButton.onClick.AddListener(ChangePunchStage);
 
                 }
                 else
@@ -111,7 +110,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     buttonText.text = "OK";
                     isPlayerOnePunching = true;
                     confirmButton.onClick.RemoveAllListeners();
-                    confirmButton.onClick.AddListener(OnClickChangePunchStage);
+                    confirmButton.onClick.AddListener(ChangePunchStage);
                 }
             }
             else if (player_one_dice_one + player_one_dice_two < player_two_dice_one + player_two_dice_two)
@@ -123,7 +122,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     buttonText.text = "OK";
                     isPlayerTwoPunching = true;
                     confirmButton.onClick.RemoveAllListeners();
-                    confirmButton.onClick.AddListener(OnClickChangePunchStage);
+                    confirmButton.onClick.AddListener(ChangePunchStage);
                 }
                 else
                 {
@@ -132,7 +131,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     buttonText.text = "OK";
                     isPlayerTwoPunching = true;
                     confirmButton.onClick.RemoveAllListeners();
-                    confirmButton.onClick.AddListener(OnClickChangePunchStage);
+                    confirmButton.onClick.AddListener(ChangePunchStage);
                 }
             }
             // SPECIAL HERE, NEED TO DIRECT TO THE STATE_PURCHASE STAGE HERE.
@@ -144,13 +143,13 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                 isPlayerTwoPunching = false;
                 isPlayerOnePunching = false;
                 confirmButton.onClick.RemoveAllListeners();
-                confirmButton.onClick.AddListener(OnClickChangePunchStage);
+                confirmButton.onClick.AddListener(ChangePunchStage);
             }
         }
        
     }
 
-    private void OnClickChangePunchStage()
+    private void ChangePunchStage()
     {
         currentPlayStage = PlayStage.prepare_punch;
 
@@ -218,30 +217,50 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public void InquryPunch()
     {
         inquiryBar.SetActive(true);
-        inquiryText.text = $"How many hate tokens you want to use? Each token can increase your damaage by 1.";
+        inquiryText.text = $"You are using {usedToken} hate tokens, you can make {1 + usedToken} damages. Do you want to add more?";
     }
 
     private void StartPunch()
     {
-        if (canStartPunch)
-        {
-            arm.SetActive(true);
+        
+            
             Vector3 pos = punchObject.transform.position;
-            pos.y = -4.8f;
+            pos.x -= 6f;
             arm.transform.position = pos;
-            punchObject.GetComponent<Collider2D>().isTrigger = true;
-        }
+        arm.SetActive(true);
+        punchObject.GetComponent<Collider2D>().isTrigger = true;
+        
     }
 
     public void CheckEnterGainPunchCompensation()
     {
+        currentPlayStage = PlayStage.gain_punch_compensation;
+
         if (isPlayerOnePunching)
         {
-
+            gameplayIllustration.text = $"P2, you gain {damage} hate tokens for P1's puch, use it to punch P1 harder!";
+            player_two_hate_token += damage;
+            damage = 0;
+            CheckIfCanGoToStatePurchase();
         }
         else if (isPlayerTwoPunching)
-        { 
-        
+        {
+            gameplayIllustration.text = $"P1, you gain {damage} hate tokens for P2's puch, use it to punch P2 harder!";
+            player_one_hate_token += damage;
+            damage = 0;
+            CheckIfCanGoToStatePurchase();
+        }
+    }
+
+    private void CheckIfCanGoToStatePurchase()
+    {
+        if (leftPuchTimes >= 1)
+        {
+            ChangePunchStage();
+        }
+        else if (leftPuchTimes <= 0)
+        {
+            currentPlayStage = PlayStage.state_purchase;
         }
     }
     private void UpdatePlayerDice()

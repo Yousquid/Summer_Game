@@ -25,11 +25,11 @@ public class PunchableObject : MonoBehaviour
 
     public void OnClickPunchThis()
     {
-        if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.punch)
+        if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.prepare_punch)
         {
             gameManager.punchObject = this.gameObject;
             gameManager.InquryPunch();
-            //gameManager.canStartPunch = true;
+            gameManager.canStartPunch = true;
             //collider.enabled = true;
         }
     }
@@ -44,5 +44,8 @@ public class PunchableObject : MonoBehaviour
         }
     }
 
-
+    private void OnMouseDown()
+    {
+        OnClickPunchThis();
+    }
 }

@@ -8,14 +8,15 @@ public class Arm_Controller : MonoBehaviour
     public float maxY = 2f;
     public float sensitivity = 0.01f;
     public float damping = 5f;
-
-    public float jitterAmplitude = 0.1f; 
-    public float jitterFrequency = 10f; 
+    public float jitterAmplitude = 0.1f;
+    public float jitterFrequency = 10f;
 
     private Vector3 initialPos;
     private Vector3 lastMousePos;
     private float currentVelocity = 0f;
+
     private bool isCharging = false;
+    private bool isReady = false; 
 
     void Start()
     {
@@ -24,36 +25,51 @@ public class Arm_Controller : MonoBehaviour
         lastMousePos = Input.mousePosition;
     }
 
+    void OnEnable()
+    {
+        isReady = false;
+        currentVelocity = 0f;
+        arm.localPosition = initialPos;
+        lastMousePos = Input.mousePosition;
+    }
+
     void Update()
     {
-        if (this.gameObject.activeSelf)
-        {
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.visible = true;
+        Cursor.visible = !this.gameObject.activeSelf;
 
-        }
-        Vector3 currentMousePos = Input.mousePosition;
-        float deltaY = currentMousePos.y - lastMousePos.y;
+        if (!isReady)
+        {
+            Vector3 currentMousePos = Input.mousePosition;
+            float deltaY = currentMousePos.y - lastMousePos.y;
 
-        if (deltaY > 0)
-        {
-            isCharging = false;
+            if (deltaY < 0f)
+            {
+                isReady = true;
+            }
+
+            lastMousePos = currentMousePos;
+            return; // 
         }
-        else if (deltaY < 0f)
+
+        Vector3 nowMousePos = Input.mousePosition;
+        float dY = nowMousePos.y - lastMousePos.y;
+
+        if (dY > 0)
         {
-            isCharging = true;
+            isCharging = false; 
+        }
+        else if (dY < 0f)
+        {
+            isCharging = true; 
         }
 
         if (!isCharging)
         {
-            currentVelocity += deltaY * sensitivity;
+            currentVelocity += dY * sensitivity;
         }
         else
         {
-            currentVelocity += deltaY * sensitivity / 2;
+            currentVelocity += dY * sensitivity / 2;
         }
 
         Vector3 newPos = arm.localPosition;
@@ -63,18 +79,16 @@ public class Arm_Controller : MonoBehaviour
         if (isCharging)
         {
             newPos.x = initialPos.x + Mathf.Sin(Time.time * jitterFrequency) * jitterAmplitude;
-
         }
         else
         {
-            newPos.x = initialPos.x; 
+            newPos.x = initialPos.x;
         }
-        arm.localPosition = newPos;
 
+        arm.localPosition = newPos;
         currentVelocity = Mathf.Lerp(currentVelocity, 0, Time.deltaTime * damping);
 
-        lastMousePos = currentMousePos;
+        lastMousePos = nowMousePos;
     }
 
-    
 }
