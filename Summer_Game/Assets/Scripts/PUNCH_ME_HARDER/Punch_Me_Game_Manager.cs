@@ -224,9 +224,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     {
         
             
-            Vector3 pos = punchObject.transform.position;
-            pos.x -= 6f;
-            arm.transform.position = pos;
+        Vector3 pos = punchObject.transform.position;
+        pos.y -= 6f;
+        arm.GetComponent<Arm_Controller>().initialPos = pos;
         arm.SetActive(true);
         punchObject.GetComponent<Collider2D>().isTrigger = true;
         

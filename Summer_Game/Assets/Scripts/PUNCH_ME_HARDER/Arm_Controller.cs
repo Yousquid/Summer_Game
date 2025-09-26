@@ -11,7 +11,7 @@ public class Arm_Controller : MonoBehaviour
     public float jitterAmplitude = 0.1f;
     public float jitterFrequency = 10f;
 
-    private Vector3 initialPos;
+    public Vector3 initialPos;
     private Vector3 lastMousePos;
     private float currentVelocity = 0f;
 
@@ -21,7 +21,6 @@ public class Arm_Controller : MonoBehaviour
     void Start()
     {
         if (arm == null) arm = transform;
-        initialPos = arm.localPosition;
         lastMousePos = Input.mousePosition;
     }
 

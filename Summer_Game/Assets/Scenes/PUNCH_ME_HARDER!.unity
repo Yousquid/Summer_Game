@@ -3477,7 +3477,7 @@ Transform:
   m_GameObject: {fileID: 2040868243}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.51, y: -4.81, z: 0}
+  m_LocalPosition: {x: -11.1, y: -4.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3495,13 +3495,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 616ea2ca0aaeedd46887def1cf87a410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arm: {fileID: 2040868245}
+  arm: {fileID: 0}
   minY: -5
   maxY: 6
   sensitivity: 0.1
   damping: 2
   jitterAmplitude: 0.1
   jitterFrequency: 20
+  initialPos: {x: 0, y: 0, z: 0}
 --- !u!61 &2040868247
 BoxCollider2D:
   m_ObjectHideFlags: 0
