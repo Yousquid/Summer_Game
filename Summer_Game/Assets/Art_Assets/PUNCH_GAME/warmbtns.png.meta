@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 059525ec22bf676448b32e7debdd5241
+guid: fd62829cd23f7744ca58f66dde8196e7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3023467923260436841
-    second: punch_ar,_0
+      213: 6825067878404403103
+    second: warmbtns_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -97,19 +97,6 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
     buildTarget: WindowsStoreApps
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -126,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: punch_ar,_0
+      name: warmbtns_0
       rect:
         serializedVersion: 2
-        x: 170
-        y: 0
-        width: 255
-        height: 649
+        x: 0
+        y: 200
+        width: 500
+        height: 200
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 79e064c51fb7a06d0800000000000000
-      internalID: -3023467923260436841
+      spriteID: f9f293c131387be50800000000000000
+      internalID: 6825067878404403103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warmbtns_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 500
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c70f7044aff6fd489146a0fcdf83015
+      internalID: 934958138
       vertices: []
       indices: 
       edges: []
@@ -151,7 +160,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 66cbdcf79b896f64abeb811e614e543c
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +170,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      punch_ar,_0: -3023467923260436841
+      warmbtns_0: 6825067878404403103
+      warmbtns_1: 934958138
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

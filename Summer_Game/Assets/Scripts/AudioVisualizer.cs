@@ -63,7 +63,7 @@ public class AudioVisualizer : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            ScreenShake.instance.Shake(.1f, .5f);
+            ScreenShake.Instance.Shake(.1f, .5f);
         }
     }
 
@@ -71,7 +71,7 @@ public class AudioVisualizer : MonoBehaviour
     {
         float currentVolume = microphoneDetection.GetCurrentVolume();
         float normalizedVolume = Mathf.Clamp01(currentVolume / maxVolume);
-        ScreenShake.instance.Shake(.1f, normalizedVolume/2);
+        ScreenShake.Instance.Shake(.1f, normalizedVolume/2);
     }
 
     void UpdateSliderValue()

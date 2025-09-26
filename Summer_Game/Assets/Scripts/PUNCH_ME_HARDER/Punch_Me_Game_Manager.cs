@@ -48,6 +48,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     private bool hasPlayerOneRolled = false;
     private bool hasPlayerTwoRolled = false;
 
+    public GameObject pickCoinButton;
+    public GameObject pickHateButton;
+
     [Header("HateTokenInquiry")]
     public GameObject inquiryBar;
     public TextMeshProUGUI inquiryText;
@@ -62,6 +65,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         player_one_health = 15;
         player_two_health = 15;
         arm.SetActive(false);
+        pickCoinButton.SetActive(false);
+        pickHateButton.SetActive(false);
     }
 
     // Update is called once per frame
@@ -238,16 +243,55 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
         if (isPlayerOnePunching)
         {
-            gameplayIllustration.text = $"P2, you gain {damage} hate tokens for P1's puch, use it to punch P1 harder!";
-            player_two_hate_token += damage;
-            damage = 0;
+            arm.SetActive(false);
+            Cursor.visible = true;
+            gameplayIllustration.text = $"P1, you gain {damage} coins for your punch!" +
+               $"P2, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
+            p1_money += damage;
+            pickCoinButton.SetActive(true);
+            pickHateButton.SetActive(true);
+
+        }
+        else if (isPlayerTwoPunching)
+        {
+            arm.SetActive(false);
+            Cursor.visible = true;
+            gameplayIllustration.text = $"P2, you gain {damage} coins for your punch!" +
+                $"P1, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
+            p2_money += damage;
+            pickCoinButton.SetActive(true);
+            pickHateButton.SetActive(true);
+        }
+    }
+
+    public void OnClickAddCoin()
+    {
+        pickCoinButton.SetActive(false);
+        pickHateButton.SetActive(false);
+        if (isPlayerOnePunching)
+        {
+            p2_money += damage;
             CheckIfCanGoToStatePurchase();
         }
         else if (isPlayerTwoPunching)
         {
-            gameplayIllustration.text = $"P1, you gain {damage} hate tokens for P2's puch, use it to punch P2 harder!";
+            p1_money += damage;
+            CheckIfCanGoToStatePurchase();
+        }
+    }
+
+    public void OnClickAddHate()
+    {
+        pickCoinButton.SetActive(false);
+        pickHateButton.SetActive(false);
+        if (isPlayerOnePunching)
+        {
+            player_two_hate_token += damage;
+            CheckIfCanGoToStatePurchase();
+        }
+        else if (isPlayerTwoPunching)
+        {
             player_one_hate_token += damage;
-            damage = 0;
             CheckIfCanGoToStatePurchase();
         }
     }
@@ -257,9 +301,11 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         if (leftPuchTimes >= 1)
         {
             ChangePunchStage();
+            damage = 0;
         }
         else if (leftPuchTimes <= 0)
         {
+            damage = 0;
             currentPlayStage = PlayStage.state_purchase;
         }
     }

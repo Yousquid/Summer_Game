@@ -1,37 +1,52 @@
 using System.Collections;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 public class ScreenShake : MonoBehaviour
 {
-    public static ScreenShake instance;
+    public static ScreenShake Instance;
 
-    private Vector3 originalPos;
+    private Vector3 camOriginalPos;
+    private Vector3 uiOriginalPos;
+
+    public RectTransform uiRoot;
 
     void Awake()
     {
-        if (instance == null) instance = this;
-        originalPos = transform.localPosition;
+        Instance = this;
     }
 
-    public void Shake(float duration, float magnitude)
+    public void Shake(float intensity, float duration)
     {
-        StartCoroutine(DoShake(duration, magnitude));
+        StopAllCoroutines();
+        StartCoroutine(ShakeRoutine(intensity, duration));
     }
 
-    private IEnumerator DoShake(float duration, float magnitude)
+    private IEnumerator ShakeRoutine(float intensity, float duration)
     {
+        camOriginalPos = transform.localPosition;
+        if (uiRoot != null) uiOriginalPos = uiRoot.localPosition;
+
         float elapsed = 0f;
-
         while (elapsed < duration)
         {
-            float offsetX = Random.Range(-1f, 1f) * magnitude;
-            float offsetY = Random.Range(-1f, 1f) * magnitude;
+            float offsetX = Random.Range(-1f, 1f) * intensity;
+            float offsetY = Random.Range(-1f, 1f) * intensity;
+            Vector3 offset = new Vector3(offsetX, offsetY, 0f);
 
-            transform.localPosition = originalPos + new Vector3(offsetX, offsetY, 0);
+            // 相机抖
+            transform.localPosition = camOriginalPos + offset;
+
+            // UI 根节点抖
+            if (uiRoot != null)
+            {
+                uiRoot.localPosition = uiOriginalPos + offset;
+            }
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        transform.localPosition = originalPos;
+        transform.localPosition = camOriginalPos;
+        if (uiRoot != null) uiRoot.localPosition = uiOriginalPos;
     }
 }
