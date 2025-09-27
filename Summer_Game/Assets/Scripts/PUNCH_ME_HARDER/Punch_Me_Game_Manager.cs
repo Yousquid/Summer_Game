@@ -34,6 +34,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public TextMeshProUGUI playerOneDice;
     public TextMeshProUGUI playerTwoDice;
+    public TextMeshProUGUI p1HateTokenText;
+    public TextMeshProUGUI p2HateTokenText;
+    public TextMeshProUGUI p1CoinText;
+    public TextMeshProUGUI p2CoinText;
+    public TextMeshProUGUI p1HealthText;
+    public TextMeshProUGUI p2HealthText;
 
     public TextMeshProUGUI gameplayIllustration;
     public TextMeshProUGUI buttonText;
@@ -74,6 +80,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     {
         UpdatePlayerDice();
         DiceCompare();
+        UpdateTexts();
     }
 
     public void RollP1Dice()
@@ -90,7 +97,15 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         hasPlayerTwoRolled = true;
     }
 
-    
+    void UpdateTexts()
+    {
+        p1CoinText.text = $"Coins: {p1_money}";
+        p1HateTokenText.text = $"Hate Tokens: {player_one_hate_token}";
+        p2CoinText.text = $"Coins: {p2_money}";
+        p2HateTokenText.text = $"Hate Tokens: {player_two_hate_token}";
+        p1HealthText.text = $"HP: {player_one_health}";
+        p2HealthText.text = $"HP: {player_two_health}";
+    }
 
     private void DiceCompare()
     {
@@ -222,7 +237,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public void InquryPunch()
     {
         inquiryBar.SetActive(true);
-        inquiryText.text = $"You are using {usedToken} hate tokens, you can make {1 + usedToken} damages. Do you want to add more?";
+        gameplayIllustration.text = $"You are using {usedToken} hate tokens, you can make {1 + usedToken} damages. Do you want to add more?";
     }
 
     private void StartPunch()

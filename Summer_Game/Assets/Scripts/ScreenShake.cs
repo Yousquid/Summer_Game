@@ -8,7 +8,6 @@ public class ScreenShake : MonoBehaviour
     private Vector3 camOriginalPos;
     private Vector3 uiOriginalPos;
 
-    public RectTransform uiRoot;
 
     void Awake()
     {
@@ -24,7 +23,6 @@ public class ScreenShake : MonoBehaviour
     private IEnumerator ShakeRoutine(float intensity, float duration)
     {
         camOriginalPos = transform.localPosition;
-        if (uiRoot != null) uiOriginalPos = uiRoot.localPosition;
 
         float elapsed = 0f;
         while (elapsed < duration)
@@ -37,16 +35,12 @@ public class ScreenShake : MonoBehaviour
             transform.localPosition = camOriginalPos + offset;
 
             // UI ¸ù½Úµã¶¶
-            if (uiRoot != null)
-            {
-                uiRoot.localPosition = uiOriginalPos + offset;
-            }
+            
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         transform.localPosition = camOriginalPos;
-        if (uiRoot != null) uiRoot.localPosition = uiOriginalPos;
     }
 }

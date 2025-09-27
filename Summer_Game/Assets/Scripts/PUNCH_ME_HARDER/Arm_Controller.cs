@@ -101,6 +101,7 @@ public class Arm_Controller : MonoBehaviour
         if (ScreenShake.Instance != null)
         {
             ScreenShake.Instance.Shake(intensity, duration);
+            UI_Shake.Instance.Shake(intensity, duration);
         }
     }
 }
