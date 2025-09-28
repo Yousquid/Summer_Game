@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
+
 
 public class Punch_Me_Game_Manager : MonoBehaviour
 {
@@ -14,8 +17,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public int player_one_hate_token;
     public int player_two_hate_token;
 
+    public bool isInquiryHate = false;
+
     public int p1_money;
     public int p2_money;
+
+    private bool hasAddedHateToken = false;
 
     public bool isPlayerOnePunching;
     public bool isPlayerTwoPunching;
@@ -28,6 +35,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public List<Upgrade> p1EstateList;
     public List<Upgrade> p2EstateList;
 
+    public int turnNumber = 0;
 
     public static int leftPuchTimes;
 
@@ -38,6 +46,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public int player_two_dice_one;
     public int player_two_dice_two;
+
+    public GameObject P1Picture;
+    public GameObject P2Picture;
 
     public GameObject player_one;
     public GameObject player_two;
@@ -63,6 +74,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     private bool hasPlayerOneRolled = false;
     private bool hasPlayerTwoRolled = false;
+    public Button playerOneDiceButton;
+    public Button playerTwoDiceButton;
 
     public GameObject pickCoinButton;
     public GameObject pickHateButton;
@@ -75,7 +88,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public TextMeshProUGUI inquiryText;
     private int usedToken = 0;
 
-    public int damage = 0;
+    public static int damage = 0;
 
 
     void Start()
@@ -87,6 +100,25 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         pickCoinButton.SetActive(false);
         pickHateButton.SetActive(false);
         gameplayIllustration.text = "Roll your dices, the winner can PUNCH the loser!!";
+        playerOneDiceButton.onClick.AddListener(RollP1Dice);
+        playerTwoDiceButton.onClick.AddListener(RollP2Dice);
+    }
+
+    void EndPlay()
+    {
+        if (player_one_health <= 0)
+        {
+            GetComponent<VideoPlayer>().Play();
+            gameplayIllustration.text = "P2 Wins!";
+            P2Picture.SetActive(true);
+
+        }
+        if (player_two_health <= 0)
+        {
+            GetComponent<VideoPlayer>().Play();
+            P1Picture.SetActive(true);
+            gameplayIllustration.text = "P1 Wins!";
+        }
     }
 
     // Update is called once per frame
@@ -96,6 +128,18 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         DiceCompare();
         UpdateTexts();
         CheckIfGoToGainIncome();
+        EndPlay();
+
+        if (isInquiryHate)
+        {
+            InquryPunch();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Scene currentScene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(currentScene.name);
+        }
     }
 
     public void RollP1Dice()
@@ -103,6 +147,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         player_one_dice_one = Random.Range(1, 6);
         player_one_dice_two = Random.Range(1, 6);
         hasPlayerOneRolled = true;
+        playerOneDiceButton.onClick.RemoveAllListeners();
     }
 
     public void RollP2Dice()
@@ -110,6 +155,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         player_two_dice_one = Random.Range(1, 6);
         player_two_dice_two = Random.Range(1, 6);
         hasPlayerTwoRolled = true;
+        playerTwoDiceButton.onClick.RemoveAllListeners();
     }
 
     void UpdateTexts()
@@ -125,8 +171,10 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     private void DiceCompare()
     {
-        if (hasPlayerOneRolled && hasPlayerTwoRolled && currentPlayStage == PlayStage.rolldice)
+        if (hasPlayerOneRolled && hasPlayerTwoRolled && currentPlayStage == PlayStage.rolldice && !hasAddedHateToken)
         {
+            confirmButton.gameObject.SetActive(true);
+
             if (player_one_dice_one + player_one_dice_two > player_two_dice_one + player_two_dice_two)
             {
                 if (player_one_dice_one == player_one_dice_two)
@@ -135,6 +183,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     leftPuchTimes = 2;
                     buttonText.text = "OK";
                     isPlayerOnePunching = true;
+                    hasAddedHateToken = true;
                     confirmButton.onClick.RemoveAllListeners();
                     confirmButton.onClick.AddListener(ChangePunchStage);
 
@@ -146,6 +195,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     buttonText.text = "OK";
                     isPlayerOnePunching = true;
                     confirmButton.onClick.RemoveAllListeners();
+                    hasAddedHateToken = true;
                     confirmButton.onClick.AddListener(ChangePunchStage);
                 }
             }
@@ -157,6 +207,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     leftPuchTimes = 2;
                     buttonText.text = "OK";
                     isPlayerTwoPunching = true;
+                    hasAddedHateToken = true;
                     confirmButton.onClick.RemoveAllListeners();
                     confirmButton.onClick.AddListener(ChangePunchStage);
                 }
@@ -166,29 +217,43 @@ public class Punch_Me_Game_Manager : MonoBehaviour
                     leftPuchTimes = 1;
                     buttonText.text = "OK";
                     isPlayerTwoPunching = true;
+                    hasAddedHateToken = true;
                     confirmButton.onClick.RemoveAllListeners();
                     confirmButton.onClick.AddListener(ChangePunchStage);
                 }
             }
-            // SPECIAL HERE, NEED TO DIRECT TO THE STATE_PURCHASE STAGE HERE.
             else if (player_one_dice_one + player_one_dice_two == player_two_dice_one + player_two_dice_two)
             {
                 gameplayIllustration.text = "A draw! No one can punch this round! But you are all rewarded with one hate token because the temperary peace makes you want to puch each other more!";
                 buttonText.text = "OK";
+                if (!hasAddedHateToken)
+                {
+                    player_one_hate_token++;
+                    player_two_hate_token++;
+                    confirmButton.onClick.RemoveAllListeners();
+                    confirmButton.onClick.AddListener(CheckIfCanGoToStatePurchase);
+
+                }
+
                 leftPuchTimes = 0;
                 isPlayerTwoPunching = false;
                 isPlayerOnePunching = false;
-                confirmButton.onClick.RemoveAllListeners();
-                confirmButton.onClick.AddListener(ChangePunchStage);
+                hasAddedHateToken = true;
             }
         }
-       
+
     }
 
     private void ChangePunchStage()
     {
-        currentPlayStage = PlayStage.prepare_punch;
+        player_one_dice_one = 0;
+        player_one_dice_two = 0;
+        player_two_dice_one = 0;
+        player_two_dice_two = 0;
 
+        currentPlayStage = PlayStage.prepare_punch;
+        hasPlayerOneRolled = false;
+        hasPlayerTwoRolled = false;
         confirmButton.gameObject.SetActive(false);
         if (isPlayerOnePunching)
         {
@@ -216,12 +281,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public void OnClickAddHateToken()
     {
-        if (isPlayerOnePunching && player_one_hate_token > usedToken)
+        if (isPlayerOnePunching && player_one_hate_token > 0)
         {
             usedToken += 1;
             player_one_hate_token--;
         }
-        else if (isPlayerTwoPunching && player_two_hate_token > usedToken)
+        else if (isPlayerTwoPunching && player_two_hate_token > 0)
         {
             usedToken += 1;
             player_two_hate_token--;
@@ -230,12 +295,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public void OnClickDecreaseHateToken()
     {
-        if (isPlayerOnePunching && player_one_hate_token > usedToken)
+        if (isPlayerOnePunching && usedToken > 0)
         {
             usedToken += -1;
             player_one_hate_token++;
         }
-        else if (isPlayerTwoPunching && player_two_hate_token > usedToken)
+        else if (isPlayerTwoPunching && usedToken > 0)
         {
             usedToken += -1;
             player_two_hate_token++;
@@ -248,6 +313,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         inquiryBar.SetActive(false);
         damage = 1 + usedToken;
         usedToken = 0;
+        isInquiryHate = false;
         StartPunch();
     }
     public void InquryPunch()
@@ -276,28 +342,63 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
         if (isPlayerOnePunching)
         {
-            arm.SetActive(false);
-            textBar.SetActive(true);
-            Cursor.visible = true;
-            gameplayIllustration.text = $"P1, you gain {damage} coins for your punch!" +
-               $"P2, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
-            p1_money += damage;
-            punchObject = null;
-            pickCoinButton.SetActive(true);
-            pickHateButton.SetActive(true);
+            if (punchObject.GetComponent<Upgrade>() == null)
+            {
+                arm.SetActive(false);
+                textBar.SetActive(true);
+                Cursor.visible = true;
+                gameplayIllustration.text = $"P1, you gain {damage} coins for your punch! " +
+                   $"P2, you can choose {damage} hate tokens for your increasing resentment or { damage * 2 } coins as your compensation, which do you want?";
+                p1_money += damage;
+                pickCoinButton.SetActive(true);
+                pickHateButton.SetActive(true);
+                punchObject = null;
+
+            }
+            else if (punchObject.GetComponent<Upgrade>() != null)
+            {
+                arm.SetActive(false);
+                textBar.SetActive(true);
+                Cursor.visible = true;
+                gameplayIllustration.text = $"P1, you gain 0 coin for your punch of the estate! " +
+                   $"P2, you gain no compensation.";
+                confirmButton.gameObject.SetActive(true);
+                confirmButton.onClick.RemoveAllListeners();
+                confirmButton.onClick.AddListener(CheckIfCanGoToStatePurchase);
+                punchObject = null;
+
+
+            }
 
         }
         else if (isPlayerTwoPunching)
         {
-            arm.SetActive(false);
-            textBar.SetActive(true);
-            Cursor.visible = true;
-            gameplayIllustration.text = $"P2, you gain {damage} coins for your punch!" +
-                $"P1, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
-            p2_money += damage;
-            punchObject = null;
-            pickCoinButton.SetActive(true);
-            pickHateButton.SetActive(true);
+            if (punchObject.GetComponent<Upgrade>() == null)
+            {
+                arm.SetActive(false);
+                textBar.SetActive(true);
+                Cursor.visible = true;
+                gameplayIllustration.text = $"P2, you gain {damage} coins for your punch! " +
+                    $"P1, you can choose {damage} hate tokens for your increasing resentment or { damage * 2 } coins as your compensation, which do you want?";
+                p2_money += damage;
+                pickCoinButton.SetActive(true);
+                pickHateButton.SetActive(true);
+                punchObject = null;
+
+            }
+            else if (punchObject.GetComponent<Upgrade>() != null)
+            {
+                arm.SetActive(false);
+                textBar.SetActive(true);
+                Cursor.visible = true;
+                gameplayIllustration.text = $"P2, you gain 0 coin for your punch of the estate! " +
+                    $"P1, you gain no compensation";
+                confirmButton.gameObject.SetActive(true);
+                confirmButton.onClick.RemoveAllListeners();
+                confirmButton.onClick.AddListener(CheckIfCanGoToStatePurchase);
+                punchObject = null;
+            }
+
         }
     }
 
@@ -307,12 +408,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         pickHateButton.SetActive(false);
         if (isPlayerOnePunching)
         {
-            p2_money += damage;
+            p2_money += damage*2;
             CheckIfCanGoToStatePurchase();
         }
         else if (isPlayerTwoPunching)
         {
-            p1_money += damage;
+            p1_money += damage * 2;
             CheckIfCanGoToStatePurchase();
         }
     }
@@ -335,6 +436,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     private void CheckIfCanGoToStatePurchase()
     {
+        
+
         if (leftPuchTimes >= 1)
         {
             ChangePunchStage();
@@ -342,9 +445,11 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         }
         else if (leftPuchTimes <= 0)
         {
+            isPlayerOnePunching = false;
+            isPlayerTwoPunching = false;
             damage = 0;
             currentPlayStage = PlayStage.state_purchase;
-            gameplayIllustration.text = "Now is the purchase stage, click on the estate to spend 1 coin to buy or upgrade one estate. The estates can give you reward each turn!";
+            gameplayIllustration.text = "Now is the purchase stage, click on the estate to spend 2 coins to buy or upgrade 1 estate. The estates can give you reward each turn!";
             p1FinishPurchaseButton.SetActive(true);
             p2FinishPurchaseButton.SetActive(true);
         }
@@ -368,12 +473,101 @@ public class Punch_Me_Game_Manager : MonoBehaviour
             currentPlayStage = PlayStage.gain_state_income;
             isP1FinishPurchase = false;
             isP2FinishPurchase = false;
+            GoToPlayerOnestateCalculate();
         }
     }
 
-    private void CheckIfGoToRollDice()
-    { 
-        
+    private void GoToPlayerOnestateCalculate()
+    {
+        if (currentPlayStage == PlayStage.gain_state_income )
+        {
+            int p1LevelOneEstate = 0;
+            int p1LevelTwoEstate = 0;
+            int p1LevelThreeEstate = 0;
+            int p1LevelFourEstate = 0;
+
+            for (int i = 0; i < p1EstateList.Count; i++)
+            {
+                if (p1EstateList[i].thisUpgradeLevel == 1)
+                {
+                    p1LevelOneEstate += 1;
+                }
+                else if (p1EstateList[i].thisUpgradeLevel == 2)
+                {
+                    p1LevelTwoEstate++;
+                }
+                else if (p1EstateList[i].thisUpgradeLevel == 3)
+                {
+                    p1LevelThreeEstate++;
+                }
+                else if (p1EstateList[i].thisUpgradeLevel == 4)
+                {
+                    p1LevelFourEstate++;
+                }
+            }
+
+            
+
+            gameplayIllustration.text = $"P1 has {p1LevelOneEstate} lv.1, {p1LevelTwoEstate} lv.2, {p1LevelThreeEstate} lv.3, and {p1LevelFourEstate} lv.4 estates, which brings {p1LevelOneEstate+ p1LevelTwoEstate*2+ p1LevelThreeEstate*2+ p1LevelFourEstate*2} coin and {p1LevelThreeEstate+ p1LevelFourEstate} hate tokens, and {p1LevelFourEstate} health to P1 this turn.";
+            p1_money += p1LevelOneEstate + p1LevelTwoEstate * 2 + p1LevelThreeEstate * 2 + p1LevelFourEstate * 2;
+            player_one_hate_token += p1LevelThreeEstate + p1LevelFourEstate;
+            player_one.GetComponent<PunchableObject>().health += p1LevelFourEstate;
+            confirmButton.gameObject.SetActive(true);
+            confirmButton.onClick.RemoveAllListeners();
+            confirmButton.onClick.AddListener(OnClickGoToPlayerTwoEstateCalculate);
+        }
+    }
+
+    private void OnClickGoToPlayerTwoEstateCalculate()
+    {
+        int p2LevelOneEstate = 0;
+        int p2LevelTwoEstate = 0;
+        int p2LevelThreeEstate = 0;
+        int p2LevelFourEstate = 0;
+
+
+        for (int i = 0; i < p2EstateList.Count; i++)
+        {
+            if (p2EstateList[i].thisUpgradeLevel == 1)
+            {
+                p2LevelOneEstate += 1;
+            }
+            else if (p2EstateList[i].thisUpgradeLevel == 2)
+            {
+                p2LevelTwoEstate++;
+            }
+            else if (p2EstateList[i].thisUpgradeLevel == 3)
+            {
+                p2LevelThreeEstate++;
+            }
+            else if (p2EstateList[i].thisUpgradeLevel == 4)
+            {
+                p2LevelFourEstate++;
+            }
+        }
+
+        gameplayIllustration.text = $"P1 has {p2LevelOneEstate} lv.1, {p2LevelTwoEstate} lv.2, {p2LevelThreeEstate} lv.3, and {p2LevelFourEstate} lv.4 estates, which brings {p2LevelOneEstate + p2LevelTwoEstate * 2 + p2LevelThreeEstate * 2 + p2LevelFourEstate * 2} coins, {p2LevelThreeEstate + p2LevelFourEstate} hate tokens and {p2LevelFourEstate} health to P2 this turn.";
+        p2_money += p2LevelOneEstate + p2LevelTwoEstate * 2 + p2LevelThreeEstate * 2 + p2LevelFourEstate * 2;
+        player_two_hate_token += p2LevelThreeEstate + p2LevelFourEstate;
+        player_two.GetComponent<PunchableObject>().health += p2LevelFourEstate;
+        confirmButton.onClick.RemoveAllListeners();
+        confirmButton.onClick.AddListener(GoToRollDiceStage);
+    }
+
+    private void GoToRollDiceStage()
+    {
+        player_one_dice_one = 0;
+        player_one_dice_two = 0;
+        player_two_dice_one = 0;
+        player_two_dice_two = 0;
+        hasPlayerOneRolled = false;
+        hasPlayerTwoRolled = false;
+        hasAddedHateToken = false;
+        confirmButton.gameObject.SetActive(false);
+        currentPlayStage = PlayStage.rolldice;
+        gameplayIllustration.text = "Roll your dices, the winner can PUNCH the loser!!";
+        playerOneDiceButton.onClick.AddListener(RollP1Dice);
+        playerTwoDiceButton.onClick.AddListener(RollP2Dice);
     }
     private void UpdatePlayerDice()
     {

@@ -20,9 +20,15 @@ public class PunchableObject : MonoBehaviour
         if (health <= 0 && this.tag != "Player")
         {
             GetComponent<Upgrade>().thisUpgradeLevel = 0;
+            health = 1;
         }
 
-        if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.prepare_punch && gameManager.punchObject != this.gameObject)
+        if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.state_purchase)
+        {
+            collider.enabled = true;
+
+        }
+        else if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.prepare_punch && gameManager.punchObject != this.gameObject)
         {
             collider.enabled = false;
         }
@@ -62,22 +68,31 @@ public class PunchableObject : MonoBehaviour
             gameManager.punchObject = this.gameObject;
             gameManager.InquryPunch();
             gameManager.canStartPunch = true;
+            gameManager.isInquiryHate = true;
             //collider.enabled = true;
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Object")
-        {
-            health -= gameManager.damage;
+        
+            health -= Punch_Me_Game_Manager.damage;
             Punch_Me_Game_Manager.leftPuchTimes--;
             gameManager.CheckEnterGainPunchCompensation();
-        }
+        
     }
 
     private void OnMouseDown()
     {
-        OnClickPunchThis();
+        if (this.GetComponent<Upgrade>() == null)
+        {
+            OnClickPunchThis();
+
+        }
+        else if (this.GetComponent<Upgrade>()!= null && this.GetComponent<Upgrade>().thisUpgradeLevel != 0)
+        {
+            OnClickPunchThis();
+
+        }
     }
 }

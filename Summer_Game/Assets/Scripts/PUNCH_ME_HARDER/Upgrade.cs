@@ -30,14 +30,22 @@ public class Upgrade : MonoBehaviour
     {
         UpdateImage();
 
-        if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.state_purchase)
+        if (thisUpgradeLevel != 0)
         {
-            thisCollider.enabled = false;
+            if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.state_purchase || gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.prepare_punch)
+            {
+                thisCollider.enabled = true;
+            }
+            else if (gameManager.punchObject != this.gameObject)
+            {
+                thisCollider.enabled = false;
+            }
         }
-        else if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.state_purchase)
+        else if (thisUpgradeLevel == 0)
         {
-            thisCollider.enabled = true;
+            
         }
+        
     }
 
     private void UpdateImage()
@@ -65,14 +73,14 @@ public class Upgrade : MonoBehaviour
     }
     private void OnMouseDown()
     {
-        if (isBelongingToPlayerOne && gameManager.p1_money >= 1 && thisUpgradeLevel < 4)
+        if (isBelongingToPlayerOne && gameManager.p1_money >= 2 && thisUpgradeLevel < 4 && gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.state_purchase)
         {
-            gameManager.p1_money--;
+            gameManager.p1_money-=2;
             thisUpgradeLevel++;
         }
-        else if (!isBelongingToPlayerOne && gameManager.p2_money >= 1 && thisUpgradeLevel < 4)
+        else if (!isBelongingToPlayerOne && gameManager.p2_money >= 2 && thisUpgradeLevel < 4 && gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.state_purchase)
         {
-            gameManager.p2_money--;
+            gameManager.p2_money-=2;
             thisUpgradeLevel++;
         }
     }

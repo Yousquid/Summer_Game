@@ -4,7 +4,7 @@ using UnityEngine;
 public class Arm_Controller : MonoBehaviour
 {
     public Transform arm;
-
+    public GameObject red;
     public float minY = -2f;
     public float maxY = 2f;
     public float sensitivity = 0.01f;
@@ -95,13 +95,16 @@ public class Arm_Controller : MonoBehaviour
     {
         float impactSpeed = Mathf.Abs(currentVelocity);
 
-        float intensity = Mathf.Clamp(impactSpeed * 0.01f, 0.05f, 0.5f); 
+        float intensity = Mathf.Clamp(impactSpeed * 0.01f, 0.05f, 0.5f);
+        intensity *= Punch_Me_Game_Manager.damage;
         float duration = Mathf.Clamp(impactSpeed * 0.002f, 0.3f, 0.6f);
+        duration *= Punch_Me_Game_Manager.damage;
+        red.SetActive(true);
+        Utils.DisableAfterSeconds(red, duration);
 
-        if (ScreenShake.Instance != null)
-        {
-            ScreenShake.Instance.Shake(intensity, duration);
+        ScreenShake.Instance.Shake(intensity, duration);
             UI_Shake.Instance.Shake(intensity, duration);
-        }
     }
+
+    
 }
