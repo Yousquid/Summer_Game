@@ -22,6 +22,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public bool canStartPunch = false;
 
+    private bool isP1FinishPurchase = false;
+    private bool isP2FinishPurchase = false;
+
     public static int leftPuchTimes;
 
     public GameObject punchObject;
@@ -31,6 +34,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public int player_two_dice_one;
     public int player_two_dice_two;
+
+    public GameObject player_one;
+    public GameObject player_two;
 
     public TextMeshProUGUI playerOneDice;
     public TextMeshProUGUI playerTwoDice;
@@ -57,6 +63,9 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public GameObject pickCoinButton;
     public GameObject pickHateButton;
 
+    public GameObject p1FinishPurchaseButton;
+    public GameObject p2FinishPurchaseButton;
+
     [Header("HateTokenInquiry")]
     public GameObject inquiryBar;
     public TextMeshProUGUI inquiryText;
@@ -73,6 +82,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         arm.SetActive(false);
         pickCoinButton.SetActive(false);
         pickHateButton.SetActive(false);
+        gameplayIllustration.text = "Roll your dices, the winner can PUNCH the loser!!";
     }
 
     // Update is called once per frame
@@ -81,6 +91,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         UpdatePlayerDice();
         DiceCompare();
         UpdateTexts();
+        CheckIfGoToGainIncome();
     }
 
     public void RollP1Dice()
@@ -99,12 +110,13 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     void UpdateTexts()
     {
+        
         p1CoinText.text = $"Coins: {p1_money}";
         p1HateTokenText.text = $"Hate Tokens: {player_one_hate_token}";
         p2CoinText.text = $"Coins: {p2_money}";
         p2HateTokenText.text = $"Hate Tokens: {player_two_hate_token}";
-        p1HealthText.text = $"HP: {player_one_health}";
-        p2HealthText.text = $"HP: {player_two_health}";
+        p1HealthText.text = $"HP: {player_one.GetComponent<PunchableObject>().health}";
+        p2HealthText.text = $"HP: {player_two.GetComponent<PunchableObject>().health}";
     }
 
     private void DiceCompare()
@@ -178,22 +190,22 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         {
             if (player_one_dice_one == player_one_dice_two)
             {
-                gameplayIllustration.text = $"P1, Pick what you want to punch! You can punch {leftPuchTimes} times!";
+                gameplayIllustration.text = $"P1, Pick what you want to punch (You can punch P2's FACE OR estate)! You can punch {leftPuchTimes} times!";
             }
             else
             {
-                gameplayIllustration.text = $"P1, Pick what you want to punch! You can punch {leftPuchTimes} time!";
+                gameplayIllustration.text = $"P1, Pick what you want to punch (You can punch P2's FACE OR estate)! You can punch {leftPuchTimes} time!";
             }
         }
         else if (isPlayerTwoPunching)
         {
             if (player_two_dice_one == player_two_dice_two)
             {
-                gameplayIllustration.text = $"P2, Pick what you want to punch! You can punch {leftPuchTimes} times!";
+                gameplayIllustration.text = $"P2, Pick what you want to punch (You can punch P1's FACE OR estate)! You can punch {leftPuchTimes} times!";
             }
             else
             {
-                gameplayIllustration.text = $"P2, Pick what you want to punch! You can punch {leftPuchTimes} time!";
+                gameplayIllustration.text = $"P2, Pick what you want to punch (You can punch P1's FACE OR estate)! You can punch {leftPuchTimes} time!";
             }
         }
     }
@@ -237,7 +249,7 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     public void InquryPunch()
     {
         inquiryBar.SetActive(true);
-        gameplayIllustration.text = $"You are using {usedToken} hate tokens, you can make {1 + usedToken} damages. Do you want to add more?";
+        gameplayIllustration.text = $"You are using {usedToken} hate tokens to increase your damage, you can make {1 + usedToken} damages.";
     }
 
     private void StartPunch()
@@ -248,6 +260,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         pos.y -= 6f;
         arm.GetComponent<Arm_Controller>().initialPos = pos;
         arm.SetActive(true);
+        textBar.SetActive(false);
+        confirmButton.gameObject.SetActive(false);
         punchObject.GetComponent<Collider2D>().isTrigger = true;
         
     }
@@ -259,10 +273,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         if (isPlayerOnePunching)
         {
             arm.SetActive(false);
+            textBar.SetActive(true);
             Cursor.visible = true;
             gameplayIllustration.text = $"P1, you gain {damage} coins for your punch!" +
                $"P2, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
             p1_money += damage;
+            punchObject = null;
             pickCoinButton.SetActive(true);
             pickHateButton.SetActive(true);
 
@@ -270,10 +286,12 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         else if (isPlayerTwoPunching)
         {
             arm.SetActive(false);
+            textBar.SetActive(true);
             Cursor.visible = true;
             gameplayIllustration.text = $"P2, you gain {damage} coins for your punch!" +
                 $"P1, you can choose {damage} hate tokens for your increasing resentment or coins as your compensation, which do you want?";
             p2_money += damage;
+            punchObject = null;
             pickCoinButton.SetActive(true);
             pickHateButton.SetActive(true);
         }
@@ -322,12 +340,36 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         {
             damage = 0;
             currentPlayStage = PlayStage.state_purchase;
+            gameplayIllustration.text = "Now is the purchase stage, click on the estate to spend 1 coin to buy or upgrade one estate. The estates can give you reward each turn!";
+            p1FinishPurchaseButton.SetActive(true);
+            p2FinishPurchaseButton.SetActive(true);
+        }
+    }
+
+    public void OnClickFinishP1Purchase()
+    {
+        isP1FinishPurchase = true;
+        p1FinishPurchaseButton.SetActive(false);
+    }
+    public void OnClickFinishP2Purchase()
+    {
+        isP2FinishPurchase = true;
+        p2FinishPurchaseButton.SetActive(false);
+    }
+
+    private void CheckIfGoToGainIncome()
+    {
+        if (currentPlayStage == PlayStage.state_purchase && isP2FinishPurchase && isP1FinishPurchase)
+        {
+            currentPlayStage = PlayStage.gain_state_income;
+            isP1FinishPurchase = false;
+            isP2FinishPurchase = false;
         }
     }
     private void UpdatePlayerDice()
     {
-        playerOneDice.text = $"{player_one_dice_one} {player_one_dice_two}";
-        playerTwoDice.text = $"{player_two_dice_one} {player_two_dice_two}";
+        playerOneDice.text = $"Dices: {player_one_dice_one} & {player_one_dice_two}";
+        playerTwoDice.text = $"Dices: {player_two_dice_one} & {player_two_dice_two}";
 
     }
 }

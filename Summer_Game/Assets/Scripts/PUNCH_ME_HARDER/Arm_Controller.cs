@@ -95,8 +95,8 @@ public class Arm_Controller : MonoBehaviour
     {
         float impactSpeed = Mathf.Abs(currentVelocity);
 
-        float intensity = Mathf.Clamp(impactSpeed * 0.01f, 0.05f, 0.5f); // 速度越大，抖动越大
-        float duration = Mathf.Clamp(impactSpeed * 0.002f, 0.1f, 0.3f);
+        float intensity = Mathf.Clamp(impactSpeed * 0.01f, 0.05f, 0.5f); 
+        float duration = Mathf.Clamp(impactSpeed * 0.002f, 0.3f, 0.6f);
 
         if (ScreenShake.Instance != null)
         {

@@ -17,10 +17,42 @@ public class PunchableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (health <= 0)
+        if (health <= 0 && this.tag != "Player")
         {
             Destroy(gameObject);
         }
+
+        if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.prepare_punch && gameManager.punchObject != this.gameObject)
+        {
+            collider.enabled = false;
+        }
+        else if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.prepare_punch && gameManager.punchObject == this.gameObject)
+        {
+            collider.enabled = true;
+
+        }
+        if (gameManager.currentPlayStage == Punch_Me_Game_Manager.PlayStage.prepare_punch)
+        {
+            if (gameManager.isPlayerOnePunching && isBelongingToP1)
+            {
+                collider.enabled = false;
+
+            }
+            else if (gameManager.isPlayerOnePunching && !isBelongingToP1)
+            {
+                collider.enabled = true;
+            }
+            if (gameManager.isPlayerTwoPunching && isBelongingToP1)
+            {
+                collider.enabled = true;
+            }
+            else if (gameManager.isPlayerTwoPunching && !isBelongingToP1)
+            {
+                collider.enabled = false;
+
+            }
+        }
+
     }
 
     public void OnClickPunchThis()
