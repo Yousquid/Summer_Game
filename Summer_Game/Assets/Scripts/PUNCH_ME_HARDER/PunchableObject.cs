@@ -19,7 +19,7 @@ public class PunchableObject : MonoBehaviour
     {
         if (health <= 0 && this.tag != "Player")
         {
-            Destroy(gameObject);
+            GetComponent<Upgrade>().thisUpgradeLevel = 0;
         }
 
         if (gameManager.currentPlayStage != Punch_Me_Game_Manager.PlayStage.prepare_punch && gameManager.punchObject != this.gameObject)

@@ -6,6 +6,7 @@ public class Upgrade : MonoBehaviour
     public Sprite level_two;
     public Sprite level_three;
     public Sprite level_four;
+    public Sprite level_zero;
 
     private SpriteRenderer spriteRenderer;
 
@@ -15,7 +16,7 @@ public class Upgrade : MonoBehaviour
 
     private Punch_Me_Game_Manager gameManager;
 
-    private int thisUpgradeLevel = 0;
+    public int thisUpgradeLevel = 0;
 
     void Start()
     {
@@ -56,6 +57,10 @@ public class Upgrade : MonoBehaviour
         else if (thisUpgradeLevel == 4)
         {
             spriteRenderer.sprite = level_four;
+        }
+        else if (thisUpgradeLevel == 0)
+        {
+            spriteRenderer.sprite = level_zero;
         }
     }
     private void OnMouseDown()

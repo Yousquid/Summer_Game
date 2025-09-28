@@ -25,6 +25,10 @@ public class Punch_Me_Game_Manager : MonoBehaviour
     private bool isP1FinishPurchase = false;
     private bool isP2FinishPurchase = false;
 
+    public List<Upgrade> p1EstateList;
+    public List<Upgrade> p2EstateList;
+
+
     public static int leftPuchTimes;
 
     public GameObject punchObject;
@@ -365,6 +369,11 @@ public class Punch_Me_Game_Manager : MonoBehaviour
             isP1FinishPurchase = false;
             isP2FinishPurchase = false;
         }
+    }
+
+    private void CheckIfGoToRollDice()
+    { 
+        
     }
     private void UpdatePlayerDice()
     {
