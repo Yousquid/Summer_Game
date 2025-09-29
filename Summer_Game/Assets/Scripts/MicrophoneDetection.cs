@@ -1,3 +1,6 @@
+#if !UNITY_WEBGL
+
+
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -294,3 +297,5 @@ public class MicrophoneDetection : MonoBehaviour
         return results;
     }
 }
+#endif
+
