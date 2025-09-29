@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditor.Rendering.LookDev;
 public class UI_Shake : MonoBehaviour
 {
     public static UI_Shake Instance;

@@ -90,6 +90,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
 
     public static int damage = 0;
 
+    private bool hasEnd = false;
+
 
     void Start()
     {
@@ -111,6 +113,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
             GetComponent<VideoPlayer>().Play();
             gameplayIllustration.text = "P2 Wins!";
             P2Picture.SetActive(true);
+            hasEnd = true;
+
 
         }
         if (player_two_health <= 0)
@@ -118,22 +122,29 @@ public class Punch_Me_Game_Manager : MonoBehaviour
             GetComponent<VideoPlayer>().Play();
             P1Picture.SetActive(true);
             gameplayIllustration.text = "P1 Wins!";
+            hasEnd = true;
+
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        UpdatePlayerDice();
-        DiceCompare();
-        UpdateTexts();
-        CheckIfGoToGainIncome();
+        if (!hasEnd)
+        {
+            UpdatePlayerDice();
+            DiceCompare();
+            UpdateTexts();
+            CheckIfGoToGainIncome();
+            if (isInquiryHate)
+            {
+                InquryPunch();
+            }
+        }
+       
         EndPlay();
 
-        if (isInquiryHate)
-        {
-            InquryPunch();
-        }
+       
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -165,6 +176,8 @@ public class Punch_Me_Game_Manager : MonoBehaviour
         p1HateTokenText.text = $"Hate Tokens: {player_one_hate_token}";
         p2CoinText.text = $"Coins: {p2_money}";
         p2HateTokenText.text = $"Hate Tokens: {player_two_hate_token}";
+        player_one_health = player_one.GetComponent<PunchableObject>().health;
+        player_two_health = player_two.GetComponent<PunchableObject>().health;
         p1HealthText.text = $"HP: {player_one.GetComponent<PunchableObject>().health}";
         p2HealthText.text = $"HP: {player_two.GetComponent<PunchableObject>().health}";
     }
