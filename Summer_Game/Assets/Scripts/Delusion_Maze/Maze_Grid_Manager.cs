@@ -7,6 +7,8 @@ public class Maze_Grid_Manager : MonoBehaviour
     public string levelFileName = "LevelData"; // 不要加 .json 后缀
     private LevelData levelData;
 
+    private int currentLevel= 1;
+
     [Header("格子预制体")]
     public GameObject emptyPrefab;   // 0 = 空地（也作为墙移动时的底层）
     public GameObject wallPrefab;    // 1 = 墙
@@ -40,6 +42,7 @@ public class Maze_Grid_Manager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S)) ShiftMovables(Vector2Int.down);
         if (Input.GetKeyDown(KeyCode.A)) ShiftMovables(Vector2Int.left);
         if (Input.GetKeyDown(KeyCode.D)) ShiftMovables(Vector2Int.right);
+        EndGameDetection();
     }
 
     void LoadLevelFromJson()
@@ -118,6 +121,26 @@ public class Maze_Grid_Manager : MonoBehaviour
         }
     }
 
+    private void EndGameDetection()
+    {
+        if (startPosition == endPosition)
+        {
+            currentLevel += 1;
+            levelFileName = $"LevelData_{currentLevel}";
+            DestroyAllChildren(transform);
+            LoadLevelFromJson();
+            GenerateLevel();
+        }
+    }
+
+    private void DestroyAllChildren(Transform parent)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = parent.GetChild(i).gameObject;
+            Destroy(child);
+        }
+    }
     private void ShiftMovables(Vector2Int dir)
     {
         if (levelData == null) return;
