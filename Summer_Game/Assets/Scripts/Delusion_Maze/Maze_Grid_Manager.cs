@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 public class Maze_Grid_Manager : MonoBehaviour
 {
     [Header("JSON 关卡文件 (放在 Resources 文件夹里)")]
@@ -15,6 +16,7 @@ public class Maze_Grid_Manager : MonoBehaviour
     public GameObject startPrefab;   // 2 = 起点
     public GameObject endPrefab;     // 3 = 终点
     public GameObject trapPrefab;    // 4 = 陷阱
+    public GameObject collapsePrefab;// 5 = 塌陷区
 
     [Header("格子设置")]
     public float cellSize = 1f;
@@ -28,7 +30,19 @@ public class Maze_Grid_Manager : MonoBehaviour
     private Vector2Int startPosition; // 起点位置
     private Vector2Int? endPosition;             // 当前终点位置
     private List<Vector2Int> trapPositions = new List<Vector2Int>(); // 当前陷阱位置列表
+    private List<Vector2Int> collapsePositions = new List<Vector2Int>(); // 当前塌陷位置列表
+    private List<Vector2Int> collapsePositionsWithWalls = new List<Vector2Int>(); // 当前塌陷位置列表
 
+
+
+
+    void ClearAllList()
+    { 
+        trapPositions.Clear();
+        collapsePositions.Clear();
+        collapsePositionsWithWalls.Clear();
+        wallPositions.Clear();
+    }
 
     void Start()
     {
@@ -43,6 +57,7 @@ public class Maze_Grid_Manager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A)) ShiftMovables(Vector2Int.left);
         if (Input.GetKeyDown(KeyCode.D)) ShiftMovables(Vector2Int.right);
         EndGameDetection();
+        CollapseDetection();
     }
 
     void LoadLevelFromJson()
@@ -57,7 +72,18 @@ public class Maze_Grid_Manager : MonoBehaviour
         Debug.Log("成功加载关卡: " + levelFileName);
     }
 
+    void CollapseDetection()
+    {
+        var overlap1 = wallPositions.Intersect(collapsePositions).ToList();
+        var overlap2 = trapPositions.Intersect(overlap1).ToList();
 
+        foreach (var pos in overlap2)
+        {
+            wallPositions.Remove(pos);
+            trapPositions.Remove(pos);
+            collapsePositionsWithWalls.Add(pos);
+        }
+    }
     void GenerateLevel()
     {
         if (levelData == null) return;
@@ -81,6 +107,9 @@ public class Maze_Grid_Manager : MonoBehaviour
                 int value = levelData.GetCell(x, y);
                 Vector3 pos = new Vector3(x * cellSize + offsetX, y * cellSize + offsetY, 0f);
 
+                if (emptyPrefab != null)
+                    baseObjects[y, x] = Instantiate(emptyPrefab, pos, Quaternion.identity, transform);
+
                 if (value == 1) // 墙
                 {
                     if (emptyPrefab != null)
@@ -102,6 +131,7 @@ public class Maze_Grid_Manager : MonoBehaviour
                         if (value == 2) startPosition = new Vector2Int(x, y);
                         if (value == 3) endPosition = new Vector2Int(x, y);
                         if (value == 4) trapPositions.Add(new Vector2Int(x, y));
+                        if (value == 5) collapsePositions.Add(new Vector2Int(x, y));
                     }
                 }
             }
@@ -117,6 +147,7 @@ public class Maze_Grid_Manager : MonoBehaviour
             case 2: return startPrefab;
             case 3: return endPrefab;
             case 4: return trapPrefab;
+            case 5: return collapsePrefab;
             default: return emptyPrefab;
         }
     }
@@ -131,15 +162,35 @@ public class Maze_Grid_Manager : MonoBehaviour
             LoadLevelFromJson();
             GenerateLevel();
         }
+
+        for (int i = 0; i < trapPositions.Count; i++)
+        {
+            if (startPosition == trapPositions[i])
+            {
+                DestroyAllChildren(transform);
+                LoadLevelFromJson();
+                GenerateLevel();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            DestroyAllChildren(transform);
+            LoadLevelFromJson();
+            GenerateLevel();
+        }
     }
 
     private void DestroyAllChildren(Transform parent)
     {
+        ClearAllList();
+
         for (int i = parent.childCount - 1; i >= 0; i--)
         {
             GameObject child = parent.GetChild(i).gameObject;
             Destroy(child);
         }
+
+       
     }
     private void ShiftMovables(Vector2Int dir)
     {
@@ -157,6 +208,34 @@ public class Maze_Grid_Manager : MonoBehaviour
             if (newX == startPosition.x && newY == startPosition.y)
             {
                 Debug.Log("阻止移动：墙会撞上起点");
+                return;
+            }
+            for (int a = 0; a < collapsePositionsWithWalls.Count; a++)
+            {
+                if (newX == collapsePositionsWithWalls[a].x && newY == collapsePositionsWithWalls[a].y)
+                {
+                    return;
+                }
+            }
+        }
+
+        foreach (var old in trapPositions)
+        {
+            int newX = (old.x + dir.x + cols) % cols;
+            int newY = (old.y + dir.y + rows) % rows;
+            for (int a = 0; a < collapsePositionsWithWalls.Count; a++)
+            {
+                if (newX == collapsePositionsWithWalls[a].x && newY == collapsePositionsWithWalls[a].y)
+                {
+                    return;
+                }
+            }
+        }
+
+        foreach (var badPlace in collapsePositionsWithWalls)
+        {
+            if (badPlace == endPosition)
+            {
                 return;
             }
         }

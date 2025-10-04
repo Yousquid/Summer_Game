@@ -80,7 +80,7 @@ public class GridEditorWindow : EditorWindow
 
                 if (GUILayout.Button(value.ToString(), GUILayout.Width(cellSize), GUILayout.Height(cellSize)))
                 {
-                    int nextValue = (value + 1) % 5; 
+                    int nextValue = (value + 1) % 6; 
                     currentLevel.SetCell(x, y, nextValue);
                 }
 
@@ -125,6 +125,7 @@ public class GridEditorWindow : EditorWindow
             case 2: return Color.green;   // 起点
             case 3: return Color.red;     // 终点
             case 4: return Color.yellow;  // 陷阱
+            case 5: return Color.blue;    // 塌陷区
             default: return Color.gray;
         }
     }

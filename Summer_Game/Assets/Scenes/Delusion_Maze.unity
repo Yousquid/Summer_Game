@@ -168,7 +168,8 @@ MonoBehaviour:
   wallPrefab: {fileID: 5988902974781199110, guid: 6c334d1290bcd0c428709afcc2edd9a1, type: 3}
   startPrefab: {fileID: 3720570482810978023, guid: 953a3d12a105e034a912d078c8ed7eca, type: 3}
   endPrefab: {fileID: 3857899625010341389, guid: 139fc439cb93a43428ba6619d54528b5, type: 3}
-  trapPrefab: {fileID: 0}
+  trapPrefab: {fileID: 5260480558435719924, guid: 7063048b111d6b541b42b86eb4b1238d, type: 3}
+  collapsePrefab: {fileID: 7701412986220902257, guid: 0e93f95dee8f31447bf9aac2d8bba806, type: 3}
   cellSize: 1
 --- !u!1 &1510477581
 GameObject:
