@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3229562273812262152}
   - component: {fileID: 6584293129441748734}
+  - component: {fileID: 4971029632474334141}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -87,3 +88,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &4971029632474334141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5988902974781199110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b800b3db43578a49b7a72cdbcd80c22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colorChangeSpeed: 3
+  minBrightness: 0.5
+  maxBrightness: 1

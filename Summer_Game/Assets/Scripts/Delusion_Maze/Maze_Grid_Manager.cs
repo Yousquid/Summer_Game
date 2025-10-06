@@ -33,8 +33,16 @@ public class Maze_Grid_Manager : MonoBehaviour
     private List<Vector2Int> collapsePositions = new List<Vector2Int>(); // 当前塌陷位置列表
     private List<Vector2Int> collapsePositionsWithWalls = new List<Vector2Int>(); // 当前塌陷位置列表
 
+    public GameObject Canvas;
+    public AudioSource music;
+    public bool hasStarted = false;
 
-
+    public void OnClickStartGame()
+    {
+        hasStarted = true;
+        Canvas.SetActive(false);
+        music.Stop();
+    }
 
     void ClearAllList()
     { 
@@ -52,12 +60,20 @@ public class Maze_Grid_Manager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W)) ShiftMovables(Vector2Int.up);
-        if (Input.GetKeyDown(KeyCode.S)) ShiftMovables(Vector2Int.down);
-        if (Input.GetKeyDown(KeyCode.A)) ShiftMovables(Vector2Int.left);
-        if (Input.GetKeyDown(KeyCode.D)) ShiftMovables(Vector2Int.right);
-        EndGameDetection();
-        CollapseDetection();
+        if (hasStarted)
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            { ShiftMovables(Vector2Int.up); ScreenShake.Instance.Shake(.2F, .1F); }
+            if (Input.GetKeyDown(KeyCode.S))
+            { ShiftMovables(Vector2Int.down); ScreenShake.Instance.Shake(.2F, .1F); }
+            if (Input.GetKeyDown(KeyCode.A))
+            { ShiftMovables(Vector2Int.left); ScreenShake.Instance.Shake(.2F, .1F); } 
+            if (Input.GetKeyDown(KeyCode.D))
+            { ShiftMovables(Vector2Int.right); ScreenShake.Instance.Shake(.2F, .1F); }
+            EndGameDetection();
+            CollapseDetection();
+        }
+        
     }
 
     void LoadLevelFromJson()
@@ -75,11 +91,15 @@ public class Maze_Grid_Manager : MonoBehaviour
     void CollapseDetection()
     {
         var overlap1 = wallPositions.Intersect(collapsePositions).ToList();
-        var overlap2 = trapPositions.Intersect(overlap1).ToList();
+        var overlap2 = trapPositions.Intersect(collapsePositions).ToList();
 
-        foreach (var pos in overlap2)
+        foreach (var pos in overlap1)
         {
             wallPositions.Remove(pos);
+            collapsePositionsWithWalls.Add(pos);
+        }
+        foreach (var pos in overlap2)
+        {
             trapPositions.Remove(pos);
             collapsePositionsWithWalls.Add(pos);
         }
