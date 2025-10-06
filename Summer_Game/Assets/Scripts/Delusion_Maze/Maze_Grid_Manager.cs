@@ -254,10 +254,20 @@ public class Maze_Grid_Manager : MonoBehaviour
 
         foreach (var badPlace in collapsePositionsWithWalls)
         {
-            if (badPlace == endPosition)
+            if (endPosition != null)
             {
-                return;
+                int newX = (endPosition.Value.x + dir.x + cols) % cols;
+                int newY = (endPosition.Value.y + dir.y + rows) % rows;
+
+                for (int a = 0; a < collapsePositionsWithWalls.Count; a++)
+                {
+                    if (newX == collapsePositionsWithWalls[a].x && newY == collapsePositionsWithWalls[a].y)
+                    {
+                        return;
+                    }
+                }
             }
+           
         }
 
         float offsetX = -(cols * cellSize) / 2f + cellSize / 2f;
