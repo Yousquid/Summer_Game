@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
 public class Maze_Grid_Manager : MonoBehaviour
 {
     [Header("JSON 关卡文件 (放在 Resources 文件夹里)")]
@@ -52,6 +53,11 @@ public class Maze_Grid_Manager : MonoBehaviour
         wallPositions.Clear();
     }
 
+    public void ReloadScene()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
+    }
     void Start()
     {
         LoadLevelFromJson();
@@ -81,7 +87,7 @@ public class Maze_Grid_Manager : MonoBehaviour
         TextAsset jsonFile = Resources.Load<TextAsset>(levelFileName);
         if (jsonFile == null)
         {
-            Debug.LogError("未找到 JSON 文件: " + levelFileName);
+            ReloadScene();
             return;
         }
         levelData = JsonUtility.FromJson<LevelData>(jsonFile.text);
