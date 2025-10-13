@@ -17,6 +17,7 @@ TagManager:
   - Select_one
   - Select_two
   - Select_three
+  - Start
   layers:
   - Default
   - TransparentFX
