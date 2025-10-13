@@ -9,7 +9,7 @@ public class Car_Spawner : MonoBehaviour
     public float spawnInterval;  // 生成间隔时间（秒）
     public bool moveRight = false;
 
-
+    public Red_Light light;
     public int randomTimeRange;
 
     private float timer = 0f;

@@ -265,7 +265,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 0.514151, b: 0.91694343, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.8352941, b: 0.9882353, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 1871633582}
   - component: {fileID: 1871633585}
   - component: {fileID: 1871633586}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Avatar_Sit_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +442,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4074483479157233230, guid: 288fddc8f14c6944eb162b4e7ca2046c, type: 3}
+  m_Sprite: {fileID: -5150704196045627465, guid: 7a7ee35af08489648a8e95d33b9c0f6f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -462,8 +462,8 @@ Transform:
   m_GameObject: {fileID: 1871633581}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06, y: -4.17, z: 0}
-  m_LocalScale: {x: 0.47998443, y: 0.47998443, z: 0.47998443}
+  m_LocalPosition: {x: 0.38, y: -4, z: 0}
+  m_LocalScale: {x: 0.14341934, y: 0.14341934, z: 0.14341934}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -533,13 +533,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.96, y: 4.3900003}
+    oldSize: {x: 7.02, y: 13.87}
     newSize: {x: 2.96, y: 4.3900003}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.96, y: 4.3900003}
+  m_Size: {x: 7.02, y: 13.87}
   m_EdgeRadius: 0
 --- !u!1 &1975567638
 GameObject:
