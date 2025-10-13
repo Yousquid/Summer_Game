@@ -7,6 +7,11 @@ public class CarMover : MonoBehaviour
 
     private Rigidbody2D rb;
 
+    private void Start()
+    {
+        Destroy(gameObject, 5f);
+
+    }
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -21,4 +26,5 @@ public class CarMover : MonoBehaviour
         Vector2 move = new Vector2(dir * speed * Time.fixedDeltaTime, 0f);
         rb.MovePosition(rb.position + move);
     }
+
 }

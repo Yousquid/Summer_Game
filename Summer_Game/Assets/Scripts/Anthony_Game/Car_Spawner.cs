@@ -22,11 +22,16 @@ public class Car_Spawner : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if (timer >= spawnInterval)
+        if (timer >= spawnInterval && light.timer < 30f)
         {
             SpawnCar();
             timer = 0f;
-            spawnInterval = Random.Range(1F, 12F);
+            spawnInterval = Random.Range(1F, randomTimeRange);
+        }
+
+        if (light.timer >= 30f)
+        {
+            spawnInterval = 12f;
         }
     }
 

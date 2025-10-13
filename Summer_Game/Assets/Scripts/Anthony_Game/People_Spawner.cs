@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using UnityEngine.UI;
+using TMPro;
 public class People_Spawner : MonoBehaviour
 {
     public float spawnY = -7f;
@@ -8,6 +9,12 @@ public class People_Spawner : MonoBehaviour
     private float timer = 0f;
     public float randomTimeRange = 2;
     public GameObject personObject;
+
+    public static float score = 30;
+    public static bool hasStop = false;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI scoreTexttwo;
+
 
     void Start()
     {
@@ -19,12 +26,21 @@ public class People_Spawner : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+
+        if (!hasStop)
+        {
+            score -= Time.deltaTime;
+
+        }
         if (timer >= spawnInterval)
         {
             SpwanPerson();
             spawnInterval = Random.Range(.2F, randomTimeRange);
             timer = 0f;
         }
+
+        scoreText.text = $"SCORE: {score}";
+        scoreTexttwo.text = $"{score}";
     }
 
     void SpwanPerson()
