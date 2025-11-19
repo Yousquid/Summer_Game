@@ -86,7 +86,7 @@ public class PlayerMelee : MonoBehaviour
             }
 
             // 防止太夸张，给一个上限（这里最多 2 倍）
-            extraPercent = Mathf.Min(extraPercent, 1.0f); // 最多 +100%
+            //extraPercent = Mathf.Min(extraPercent, 1.0f); // 最多 +100%
 
             float scaleMultiplier = 1f + extraPercent;
 
