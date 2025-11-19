@@ -23,6 +23,9 @@ public class PlayerMovement : MonoBehaviour
     float dashTimeRemaining;
     Vector2 dashDirection;
     float lastDashTime;
+
+    public float CurrentSpeed { get; private set; }
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,7 +59,22 @@ public class PlayerMovement : MonoBehaviour
             UpdateVelocity();
             ApplyMovement();
         }
-        
+        UpdateCurrentSpeed();
+
+    }
+
+    void UpdateCurrentSpeed()
+    {
+        if (isDashing)
+        {
+            // dash 时速度 = 距离 / 时间
+            CurrentSpeed = dashDistance / dashDuration;
+        }
+        else
+        {
+            // 平时用我们自己维护的 currentVelocity
+            CurrentSpeed = currentVelocity.magnitude;
+        }
     }
 
     /// <summary>

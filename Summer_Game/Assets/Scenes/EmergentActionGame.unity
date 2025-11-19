@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f281f0e9528fb45a2a8460c53c2bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 6
+  maxSpeed: 8
   acceleration: 20
   deceleration: 25
   inputDeadZone: 0.1
@@ -537,6 +537,8 @@ MonoBehaviour:
   slashPrefab: {fileID: 6706700787937602883, guid: 6e7013ca83702964fabfd28d581f1aa4, type: 3}
   slashDistance: 1.2
   slashDuration: 0.15
+  movement: {fileID: 832193582}
+  maxMoveSpeed: 4
 --- !u!114 &832193590
 MonoBehaviour:
   m_ObjectHideFlags: 0
