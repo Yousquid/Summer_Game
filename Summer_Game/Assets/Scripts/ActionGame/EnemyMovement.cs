@@ -8,9 +8,11 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerZone stretchTracker;   // 如果敌人在 StretchZone 里，也会被扭曲移动
 
+    private int life = 10;
+
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GameObject.FindWithTag("Player").GetComponent<Rigidbody2D>();
         stretchTracker = GetComponent<PlayerZone>();  // 如果敌人也有 PlayerZone
     }
 
@@ -30,5 +32,22 @@ public class EnemyMovement : MonoBehaviour
 
         // 3. 移动
         rb.MovePosition(rb.position + delta);
+
+        if (life <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Basket"))
+        {
+            life -= 1;
+        }
+        if (collision.gameObject.CompareTag("Light"))
+        {
+            life -= 3;
+        }
     }
 }

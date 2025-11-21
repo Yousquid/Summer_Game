@@ -58,6 +58,8 @@ public class PlayerMelee : MonoBehaviour
         // 5. 生成挥砍
         GameObject slash = Instantiate(slashPrefab, spawnPos, rot);
 
+        SoundSystem.instance.PlaySound("Slash");
+
         // ======== 5.5 根据玩家速度放大 Slash 尺寸 ========
 
         if (movement != null && movement.maxSpeed > 0f)
@@ -91,6 +93,8 @@ public class PlayerMelee : MonoBehaviour
             float scaleMultiplier = 1f + extraPercent;
 
             slash.transform.localScale = slash.transform.localScale * scaleMultiplier;
+
+            ScreenShake.Instance.Shake(0.08f * scaleMultiplier, 0.05f);
         }
 
         // 6. 可选：覆盖 slash 自身的 lifeTime

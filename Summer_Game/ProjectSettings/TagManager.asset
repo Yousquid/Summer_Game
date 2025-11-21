@@ -18,6 +18,7 @@ TagManager:
   - Select_two
   - Select_three
   - Start
+  - Enemy
   layers:
   - Default
   - TransparentFX

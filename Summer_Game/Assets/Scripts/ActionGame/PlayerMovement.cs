@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 originalScale;   // 玩家原始体型
     private float dashElapsed;       // 本次 dash 已经过去的时间
+
+    private bool dashSoundPlayed = false;
     public float CurrentSpeed { get; private set; }
 
     void Awake()
@@ -192,6 +194,14 @@ public class PlayerMovement : MonoBehaviour
 
         thisSprite.color = Color.blue;
 
+        if (!dashSoundPlayed)
+        {
+            SoundSystem.instance.PlaySound("Dash2");
+            SoundSystem.instance.PlaySound("Dash1");
+
+            dashSoundPlayed = true;
+        }
+
         // 如需空间拉伸，这里也可以扭曲 dash 的位移
         if (stretchTracker != null && stretchTracker.currentZone != null)
         {
@@ -210,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
         if (dashTimeRemaining <= 0f)
         {
             isDashing = false;
+            dashSoundPlayed = false;
 
             transform.localScale = originalScale;
 

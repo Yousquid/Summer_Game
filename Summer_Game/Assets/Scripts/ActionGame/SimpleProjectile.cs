@@ -9,7 +9,7 @@ public class SimpleProjectile : MonoBehaviour
     private Vector2 moveDir;
 
     private StretchZone currentZone;
-
+    
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,6 +50,13 @@ public class SimpleProjectile : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject,0.01f);
+        }
+    }
     void OnTriggerExit2D(Collider2D other)
     {
         var zone = other.GetComponent<StretchZone>();
