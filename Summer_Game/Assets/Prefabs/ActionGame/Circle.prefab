@@ -169,6 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 12
   lifeTime: 3
+  hitEffectPrefab: {fileID: 8781412325812357503, guid: 200190dd4eea4dd4a861ef7b70c71ace, type: 3}
 --- !u!114 &965661271790129560
 MonoBehaviour:
   m_ObjectHideFlags: 0

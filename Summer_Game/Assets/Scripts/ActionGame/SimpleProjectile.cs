@@ -9,7 +9,8 @@ public class SimpleProjectile : MonoBehaviour
     private Vector2 moveDir;
 
     private StretchZone currentZone;
-    
+    public GameObject hitEffectPrefab;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -54,6 +55,7 @@ public class SimpleProjectile : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
+            Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject,0.01f);
         }
     }

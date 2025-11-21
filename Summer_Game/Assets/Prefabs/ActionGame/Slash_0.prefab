@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2012799148789707052}
   - component: {fileID: 2605007213821522226}
   - component: {fileID: 7330297838852263971}
+  - component: {fileID: 1849112576812932298}
   m_Layer: 0
   m_Name: Slash_0
   m_TagString: Light
@@ -228,3 +229,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyStretchMultiplier: 1.5
   alignToZoneDirection: 0
+--- !u!114 &1849112576812932298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706700787937602883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ea7b5baab43c044bc2b60151eb7a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitEffectPrefab: {fileID: 8781412325812357503, guid: c7120e33bfca8f14298e40f8b4d965a2, type: 3}

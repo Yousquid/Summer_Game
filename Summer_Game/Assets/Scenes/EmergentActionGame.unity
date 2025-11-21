@@ -882,6 +882,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 7
   targetPlayer: {fileID: 832193584}
+  knockbackDistance: 1.5
+  knockbackDuration: 0.1
+  particle: {fileID: 8781412325812357503, guid: a941909375434dd4ba8d472ec507aa74, type: 3}
 --- !u!114 &1173216850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1040,7 +1043,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Explode
     clip: {fileID: 8300000, guid: 850a5bb7ba8167f44ab42e9773594ca7, type: 3}
-    volume: 1
+    volume: 0.364
     pitch: 1.38
     loop: 0
     source: {fileID: 0}
@@ -1058,6 +1061,12 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Slash
     clip: {fileID: 8300000, guid: 59795dba10a8e7049820105854041b0a, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: EnemyDead
+    clip: {fileID: 8300000, guid: d26e3f61df585754e84a68934615fadc, type: 3}
     volume: 1
     pitch: 1
     loop: 0
