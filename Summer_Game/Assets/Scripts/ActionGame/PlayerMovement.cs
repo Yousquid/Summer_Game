@@ -24,14 +24,27 @@ public class PlayerMovement : MonoBehaviour
     Vector2 dashDirection;
     float lastDashTime;
 
+    private TrailRenderer trail;
+    private Gradient inintialTrailColor;
+    private SpriteRenderer thisSprite;
+
+    private Vector3 originalScale;   // 玩家原始体型
+    private float dashElapsed;       // 本次 dash 已经过去的时间
     public float CurrentSpeed { get; private set; }
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         stretchTracker = GetComponent<PlayerZone>(); // optional    
+        originalScale = transform.localScale;
     }
 
+    private void Start()
+    {
+        trail = GetComponent<TrailRenderer>();
+        inintialTrailColor = trail.colorGradient;
+        thisSprite = GetComponent<SpriteRenderer>();
+    }
     void Update()
     {
         float x = Input.GetAxisRaw("Horizontal");
@@ -154,7 +167,10 @@ public class PlayerMovement : MonoBehaviour
         dashDirection = dir;
         isDashing = true;
         dashTimeRemaining = dashDuration;
+        dashElapsed = 0f;                     
         lastDashTime = Time.time;
+
+        transform.localScale = originalScale * 2f;
     }
 
     /// <summary>
@@ -166,6 +182,16 @@ public class PlayerMovement : MonoBehaviour
         float dashSpeed = dashDistance / dashDuration;
         Vector2 delta = dashDirection * dashSpeed * Time.fixedDeltaTime;
 
+        // Trail & 颜色之类的效果
+        Gradient g = trail.colorGradient;
+        var keys = g.colorKeys;
+        keys[0].color = Color.blue;
+        g.colorKeys = keys;
+        trail.colorGradient = g;
+        trail.widthMultiplier = 2f;
+
+        thisSprite.color = Color.blue;
+
         // 如需空间拉伸，这里也可以扭曲 dash 的位移
         if (stretchTracker != null && stretchTracker.currentZone != null)
         {
@@ -174,10 +200,23 @@ public class PlayerMovement : MonoBehaviour
 
         rb.MovePosition(rb.position + delta);
 
+        dashElapsed += Time.fixedDeltaTime;
         dashTimeRemaining -= Time.fixedDeltaTime;
+
+        float t = Mathf.Clamp01(dashElapsed / dashDuration); // 0 → 1
+        float scaleMultiplier = Mathf.Lerp(2f, 1f, t);       // 2 → 1
+        transform.localScale = originalScale * scaleMultiplier;
+
         if (dashTimeRemaining <= 0f)
         {
             isDashing = false;
+
+            transform.localScale = originalScale;
+
+            // 还原 trail 和颜色
+            trail.colorGradient = inintialTrailColor;
+            trail.widthMultiplier = 1;
+            thisSprite.color = Color.white;
         }
     }
 }
