@@ -8,7 +8,7 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb;
     private PlayerZone stretchTracker;   // 如果敌人在 StretchZone 里，也会被扭曲移动
 
-    private int life = 15;
+    public int life = 8;
     [Header("Knockback")]
     public float knockbackDistance = 1.5f;   // 被击退的总距离
     public float knockbackDuration = 0.1f;   // 击退持续时间（越小越“瞬间”）

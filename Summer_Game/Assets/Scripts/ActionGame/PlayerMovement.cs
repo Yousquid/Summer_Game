@@ -34,6 +34,12 @@ public class PlayerMovement : MonoBehaviour
     private bool dashSoundPlayed = false;
     public float CurrentSpeed { get; private set; }
 
+    [Header("Knockback")]
+    public float knockbackDistance = 2f;     // 击退距离
+    public float knockbackDuration = 0.1f;   // 击退持续时间（越小越瞬间）
+    private bool isKnockback = false;
+    private Vector2 knockbackDir;
+    private float knockbackTimeRemaining;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -65,17 +71,45 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isDashing)
+        if (isKnockback)
         {
-            DoDashMovement();     // 覆盖正常移动
+            DoKnockbackMovement();    
+        }
+        else if (isDashing)
+        {
+            DoDashMovement();         // dash
         }
         else
         {
             UpdateVelocity();
             ApplyMovement();
         }
+
         UpdateCurrentSpeed();
 
+    }
+
+    void DoKnockbackMovement()
+    {
+        // knockbackSpeed = 距离 / 时间
+        float knockbackSpeed = knockbackDistance / knockbackDuration;
+        Vector2 delta = knockbackDir * knockbackSpeed * Time.fixedDeltaTime;
+
+        // StretchZone 支持
+        if (stretchTracker != null && stretchTracker.currentZone != null)
+        {
+            delta = stretchTracker.currentZone.WarpDisplacement(rb.position, delta);
+        }
+
+        rb.MovePosition(rb.position + delta);
+
+        // 计时
+        knockbackTimeRemaining -= Time.fixedDeltaTime;
+
+        if (knockbackTimeRemaining <= 0f)
+        {
+            isKnockback = false;  // 击退结束
+        }
     }
 
     void UpdateCurrentSpeed()
@@ -229,5 +263,28 @@ public class PlayerMovement : MonoBehaviour
             trail.widthMultiplier = 1;
             thisSprite.color = Color.white;
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Enemy"))
+        {
+            StartKnockback(collision);
+            ScreenShake.Instance.Shake(.6f,.3f);
+        }
+    }
+
+    void StartKnockback(Collision2D collision)
+    {
+        // 击退方向 = 玩家位置 - 敌人位置（也就是从敌人那里被打飞）
+        Vector2 dir = ((Vector2)transform.position - (Vector2)collision.transform.position).normalized;
+
+        // 防止没有方向（重叠时）
+        if (dir.sqrMagnitude < 0.0001f)
+            dir = Vector2.up;
+
+        knockbackDir = dir;
+        isKnockback = true;
+        knockbackTimeRemaining = knockbackDuration;
     }
 }
