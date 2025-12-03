@@ -31,8 +31,8 @@ TagManager:
   - Inner
   - Marker
   - Player
-  - 
-  - 
+  - Enemy
+  - EnemyProjectile
   - 
   - 
   - 
