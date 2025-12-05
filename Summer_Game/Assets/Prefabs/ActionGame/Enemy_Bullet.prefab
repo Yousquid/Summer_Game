@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 5357737900706803353}
   m_Layer: 12
   m_Name: Enemy_Bullet
-  m_TagString: Basket
+  m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,7 +136,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 162a1dc21c0d0a340ba1d40b7d776ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 12
+  speed: 18
   lifeTime: 3
   hitEffectPrefab: {fileID: 8781412325812357503, guid: 81224c9082a10894b9d22d50019ed2f1, type: 3}
 --- !u!114 &5357737900706803353

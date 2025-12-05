@@ -19,6 +19,7 @@ TagManager:
   - Select_three
   - Start
   - Enemy
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX

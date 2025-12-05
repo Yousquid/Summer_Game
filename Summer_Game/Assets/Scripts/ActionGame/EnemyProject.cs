@@ -56,7 +56,7 @@ public class EnemyProject : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject, 0.01f);
+            Destroy(gameObject, 0.02f);
         }
     }
     void OnTriggerExit2D(Collider2D other)

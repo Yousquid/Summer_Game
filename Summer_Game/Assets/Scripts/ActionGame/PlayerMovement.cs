@@ -267,11 +267,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("EnemyBullet"))
         {
             StartKnockback(collision);
             ScreenShake.Instance.Shake(.6f,.3f);
         }
+
     }
 
     void StartKnockback(Collision2D collision)
