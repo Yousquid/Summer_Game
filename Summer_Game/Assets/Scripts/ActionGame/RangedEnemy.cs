@@ -322,7 +322,7 @@ public class RangedEnemy : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // 比如玩家子弹 Tag 是 "Basket" 或 "PlayerBullet"
-        if (collision.collider.CompareTag("Light") || collision.collider.CompareTag("Basket"))
+        if (collision.gameObject.CompareTag("Light") || collision.collider.CompareTag("Basket"))
         {
             // 取子弹位置作为击退来源
             StartKnockback(collision.transform.position);
@@ -333,7 +333,11 @@ public class RangedEnemy : MonoBehaviour
             // life -= 1;
             // Destroy(collision.gameObject);
         }
+
+        
     }
+
+
 
     // 在 Scene 里画个射程圈方便调试
     void OnDrawGizmosSelected()
