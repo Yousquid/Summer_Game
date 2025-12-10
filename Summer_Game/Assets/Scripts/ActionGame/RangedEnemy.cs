@@ -45,6 +45,8 @@ public class RangedEnemy : MonoBehaviour
 
     private int health = 3;
 
+    private bool hasPlayedChargingSound = false;
+
     public GameObject deadEffect; 
 
     private enum State
@@ -116,6 +118,11 @@ public class RangedEnemy : MonoBehaviour
 
             case State.Charging:
                 chargeTimer += Time.deltaTime;
+                if (!hasPlayedChargingSound)
+                {
+                    SoundSystem.instance.PlaySound("EnemyCharging1");
+                    hasPlayedChargingSound = true;
+                }
 
                 // 0~1 的蓄力进度
                 float t = Mathf.Clamp01(chargeTimer / chargeTime);
@@ -134,7 +141,7 @@ public class RangedEnemy : MonoBehaviour
             case State.Cooldown:
                 cooldownTimer -= Time.deltaTime;
                 HideAimLine();
-
+                hasPlayedChargingSound = false;
                 if (cooldownTimer <= 0f)
                 {
                     // 冷却结束后再看距离：近 → 继续蓄力，远 → 回去追
@@ -243,6 +250,8 @@ public class RangedEnemy : MonoBehaviour
         {
             ep.Init(dir);
         }
+
+        SoundSystem.instance.PlaySound("Shoot");
 
         StartCoroutine(FirePopEffect());
 

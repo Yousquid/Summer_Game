@@ -271,6 +271,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartKnockback(collision);
             ScreenShake.Instance.Shake(.6f,.3f);
+            SoundSystem.instance.PlaySound("PlayerHurt");
         }
 
     }
