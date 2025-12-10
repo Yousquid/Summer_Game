@@ -11,6 +11,7 @@ public class StretchZone : MonoBehaviour
     {
         box = GetComponent<BoxCollider2D>();
         box.isTrigger = true;
+        Destroy(gameObject, 4F);
     }
 
     // —— 如果你有 WarpDisplacement 就继续保留，这里略 —— //
