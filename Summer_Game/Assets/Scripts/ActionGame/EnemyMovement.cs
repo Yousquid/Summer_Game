@@ -41,6 +41,7 @@ public class EnemyMovement : MonoBehaviour
         {
             SoundSystem.instance.PlaySound("EnemyDead");
             Instantiate(particle, transform.position, Quaternion.identity);
+            PlayerMovement.score += 10;
             Destroy(gameObject);
         }
     }

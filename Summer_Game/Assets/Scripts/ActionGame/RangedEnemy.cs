@@ -89,6 +89,7 @@ public class RangedEnemy : MonoBehaviour
         {
             Instantiate(deadEffect, transform.position, Quaternion.identity);
             SoundSystem.instance.PlaySound("EnemyDead");
+            PlayerMovement.score += 20;
             Destroy(gameObject);
         }
 

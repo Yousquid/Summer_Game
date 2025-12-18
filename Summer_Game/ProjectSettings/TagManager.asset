@@ -20,6 +20,7 @@ TagManager:
   - Start
   - Enemy
   - EnemyBullet
+  - ScoreUI
   layers:
   - Default
   - TransparentFX

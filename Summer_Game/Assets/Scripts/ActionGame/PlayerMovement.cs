@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using TMPro;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
@@ -40,6 +40,14 @@ public class PlayerMovement : MonoBehaviour
     private bool isKnockback = false;
     private Vector2 knockbackDir;
     private float knockbackTimeRemaining;
+
+    public TextMeshProUGUI scoreUI;
+    public TextMeshProUGUI livesUI;
+
+    public static int score = 0;
+    public static int lives = 3;
+
+    public GameObject GameOverUI;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -67,6 +75,18 @@ public class PlayerMovement : MonoBehaviour
         {
             TryStartDash(); // like above
         }
+
+        scoreUI.text = $"Score: {score}";
+        livesUI.text = $"LEFT LIVES: {lives}";
+
+        if (lives <= 0)
+        {
+            GameOverUI.SetActive(true);
+            Time.timeScale = 0f;
+            Destroy(gameObject);
+        }
+
+
     }
 
     void FixedUpdate()
@@ -270,8 +290,9 @@ public class PlayerMovement : MonoBehaviour
         if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("EnemyBullet"))
         {
             StartKnockback(collision);
-            ScreenShake.Instance.Shake(.6f,.3f);
+            ScreenShake.Instance.Shake(.6f,.1f);
             SoundSystem.instance.PlaySound("PlayerHurt");
+            lives -= 1;
         }
 
     }

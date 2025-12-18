@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemySpawner : MonoBehaviour
 {
     [Header("生成设置")]
-    public GameObject[] enemyPrefabs;   
-    public Transform player;            // 玩家
-    public int maxEnemiesInScene = 3;   // 场景最大敌人数量
+    public GameObject[] enemyPrefabs;
+    public Transform player;
+    public int maxEnemiesInScene = 3;
 
     [Header("生成范围（以玩家为中心）")]
     public float minSpawnRadius = 5f;
@@ -16,18 +17,42 @@ public class EnemySpawner : MonoBehaviour
 
     private float checkTimer = 0f;
 
+    void OnEnable()
+    {
+        BindPlayer();
+        checkTimer = 0f; // 重进场景时重置计时器，避免异常间隔
+    }
+
     void Start()
     {
-        if (player == null)
-        {
-            GameObject p = GameObject.FindWithTag("Player");
-            if (p != null) player = p.transform;
-        }
+        BindPlayer();
+    }
+
+    void BindPlayer()
+    {
+        GameObject p = GameObject.FindWithTag("Player");
+        player = (p != null) ? p.transform : null;
+        // Debug.Log("[EnemySpawner] BindPlayer: " + (player ? player.name : "NOT FOUND"));
     }
 
     void Update()
     {
-        if (player == null || enemyPrefabs == null || enemyPrefabs.Length == 0)
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            PlayerMovement.score = 0;
+            PlayerMovement.lives = 3;
+            Time.timeScale = 1;
+        }
+
+        // Player 可能比 Spawner 晚生成：找不到就持续尝试
+        if (player == null)
+        {
+            BindPlayer();
+            if (player == null) return;
+        }
+
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
             return;
 
         checkTimer += Time.deltaTime;
@@ -36,30 +61,22 @@ public class EnemySpawner : MonoBehaviour
             checkTimer = 0f;
             CheckAndSpawnEnemies();
         }
+
+       
     }
 
     void CheckAndSpawnEnemies()
     {
-        // 当前场景中所有敌人
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        int currentCount = enemies.Length;
+        int currentCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        if (currentCount >= maxEnemiesInScene) return;
 
-        if (currentCount >= maxEnemiesInScene)
-            return;
-
-        // 这次最多能再生成多少
         int canSpawn = maxEnemiesInScene - currentCount;
-
-        // 本次生成 1~3 个之间随机
-        int spawnCount = Random.Range(1, 4);
-        spawnCount = Mathf.Min(spawnCount, canSpawn);
+        int spawnCount = Mathf.Min(Random.Range(1, 4), canSpawn);
 
         for (int i = 0; i < spawnCount; i++)
         {
             Vector3 spawnPos = GetRandomPositionAroundPlayer();
-
             GameObject prefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-
             Instantiate(prefab, spawnPos, Quaternion.identity);
         }
     }
@@ -68,12 +85,10 @@ public class EnemySpawner : MonoBehaviour
     {
         float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
         float radius = Random.Range(minSpawnRadius, maxSpawnRadius);
-
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
 
         Vector3 pos = player.position + (Vector3)offset;
         pos.z = 0f;
-
         return pos;
     }
 }

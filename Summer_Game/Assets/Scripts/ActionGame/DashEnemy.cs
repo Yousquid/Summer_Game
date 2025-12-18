@@ -57,6 +57,7 @@ public class DashEnemy : MonoBehaviour
     private bool hasPlayedChargingSound = false;
 
 
+
     public GameObject deadEffect;
 
     private enum State
@@ -84,6 +85,7 @@ public class DashEnemy : MonoBehaviour
             originalColor = sprite.color;
 
         originalScale = transform.localScale;
+
     }
 
     void Update()
@@ -92,6 +94,7 @@ public class DashEnemy : MonoBehaviour
         {
             Instantiate(deadEffect, transform.position, Quaternion.identity);
             SoundSystem.instance.PlaySound("EnemyDead");
+            PlayerMovement.score += 30;
             Destroy(gameObject);
         }
 
